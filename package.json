@@ -19,8 +19,11 @@
   "bugs": {
     "url": "https://github.com/JBuckle04/personalPage/issues"
   },
+  "engines": {
+    "node": ">=20.3.0"
+  },
   "homepage": "https://github.com/JBuckle04/personalPage#readme",
   "dependencies": {
-    "astro": "^6.4.3"
+    "astro": "^5.18.2"
   }
 }
