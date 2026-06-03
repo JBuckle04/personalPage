@@ -257,6 +257,11 @@ const featuredProjects = [
     align-items: stretch;
   }
 
+  /* If there's no profile card (aside removed), make the hero copy span both columns */
+  .hero-grid:not(:has(.profile-card)) > .hero-copy {
+    grid-column: 1 / -1;
+  }
+
   .hero-copy,
   .profile-card,
   .content-section,
