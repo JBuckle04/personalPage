@@ -1,37 +1,583 @@
+---
+const name = 'YOUR_NAME_HERE'
+const role = 'Design-minded developer, builder, or creator'
+const location = 'Open to remote work and interesting collaborations'
+const githubUsername = 'YOUR_GITHUB_USERNAME'
+const featuredProjects = [
+  {
+    name: 'Project Atlas',
+    summary: 'A focused product that helps people track priorities, habits, or creative work without noise.',
+    tags: ['Product design', 'TypeScript', 'Astro'],
+  },
+  {
+    name: 'Signal Journal',
+    summary: 'A reflective writing space for notes, ideas, and lightweight planning with a calm interface.',
+    tags: ['Writing', 'UI systems', 'Accessibility'],
+  },
+  {
+    name: 'Launch Notes',
+    summary: 'A simple landing page kit for turning an idea into a believable first public presence fast.',
+    tags: ['Marketing', 'Copy', 'Frontend'],
+  },
+]
+---
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>YOUR_NAME_HERE - Personal Page</title>
+    <meta
+      name="description"
+      content={`Personal site for ${name} - projects, writing, and contact details.`}
+    />
+    <meta name="theme-color" content="#0c121a" />
+    <title>{name} | Personal Page</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <header>
-      <h1>Hi, I'm YOUR_NAME_HERE</h1>
-      <p>Welcome to my personal GitHub Pages site.</p>
-    </header>
+    <div class="background" aria-hidden="true">
+      <span class="orb orb-a"></span>
+      <span class="orb orb-b"></span>
+      <span class="grid"></span>
+    </div>
 
-    <main>
-      <section>
-        <h2>About</h2>
-        <p>Add a short bio here.</p>
-      </section>
+    <div class="page-shell">
+      <header class="hero">
+        <nav class="topbar" aria-label="Primary">
+          <a class="brand" href="#home">{name}</a>
+          <div class="nav-links">
+            <a href="#about">About</a>
+            <a href="#work">Work</a>
+            <a href="#contact">Contact</a>
+          </div>
+        </nav>
 
-      <section>
-        <h2>Projects</h2>
-        <ul>
-          <li>Project one</li>
-          <li>Project two</li>
-          <li>Project three</li>
-        </ul>
-      </section>
+        <div class="hero-grid" id="home">
+          <div class="hero-copy">
+            <p class="eyebrow">Personal site template</p>
+            <h1>
+              Building small, sharp things with taste.
+            </h1>
+            <p class="lede">
+              Hi, I’m <strong>{name}</strong>, a {role.toLowerCase()}. I care about clear
+              writing, thoughtful interfaces, and shipping work that feels composed
+              from the first click.
+            </p>
 
-      <section>
-        <h2>Contact</h2>
-        <p>
-          <a href="https://github.com/YOUR_GITHUB_USERNAME">GitHub</a>
-        </p>
-      </section>
-    </main>
+            <div class="actions">
+              <a class="button button-primary" href={`https://github.com/${githubUsername}`}>
+                View GitHub
+              </a>
+              <a class="button button-secondary" href="#contact">
+                Get in touch
+              </a>
+            </div>
+
+            <dl class="meta-list">
+              <div>
+                <dt>Focus</dt>
+                <dd>Frontend, product thinking, and visual systems</dd>
+              </div>
+              <div>
+                <dt>Location</dt>
+                <dd>{location}</dd>
+              </div>
+              <div>
+                <dt>Status</dt>
+                <dd>Available for freelance, part-time, or one-off builds</dd>
+              </div>
+            </dl>
+          </div>
+
+          <aside class="profile-card" aria-label="Profile summary">
+            <p class="profile-label">Currently shipping</p>
+            <div class="profile-ring">
+              <span>{name.split(' ')[0]?.[0] ?? 'Y'}</span>
+            </div>
+            <div class="profile-lines">
+              <p>{role}</p>
+              <p>{location}</p>
+            </div>
+            <div class="profile-tags">
+              <span>Astro</span>
+              <span>GitHub Pages</span>
+              <span>Responsive</span>
+            </div>
+          </aside>
+        </div>
+      </header>
+
+      <main>
+        <section class="content-section" id="about">
+          <div class="section-heading">
+            <p class="eyebrow">About</p>
+            <h2>A compact introduction that still feels human.</h2>
+          </div>
+          <p>
+            This template is built for a personal homepage that does more than list links.
+            It gives you room for a short bio, a design direction, a few featured projects,
+            and a clean way to reach you without forcing a long scroll.
+          </p>
+        </section>
+
+        <section class="content-section" id="work">
+          <div class="section-heading">
+            <p class="eyebrow">Selected work</p>
+            <h2>Projects framed like case studies, not placeholders.</h2>
+          </div>
+
+          <div class="project-grid">
+            {featuredProjects.map((project) => (
+              <article class="project-card">
+                <p class="project-kicker">Featured project</p>
+                <h3>{project.name}</h3>
+                <p>{project.summary}</p>
+                <ul>
+                  {project.tags.map((tag) => <li>{tag}</li>)}
+                </ul>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section class="content-section split-section" id="contact">
+          <div class="section-heading">
+            <p class="eyebrow">Contact</p>
+            <h2>Keep the next step obvious.</h2>
+          </div>
+
+          <div class="contact-card">
+            <p>
+              If you want to collaborate, swap ideas, or see more work, start with GitHub
+              or send a direct note using your preferred channel.
+            </p>
+            <div class="contact-links">
+              <a href={`https://github.com/${githubUsername}`}>GitHub profile</a>
+              <a href="mailto:hello@example.com">hello@example.com</a>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
   </body>
 </html>
+
+<style>
+  :global(html) {
+    scroll-behavior: smooth;
+  }
+
+  :global(body) {
+    margin: 0;
+    min-height: 100vh;
+    font-family: 'Space Grotesk', sans-serif;
+    color: #eff3f8;
+    background:
+      radial-gradient(circle at top left, rgba(225, 175, 108, 0.2), transparent 35%),
+      radial-gradient(circle at right 10%, rgba(120, 164, 255, 0.18), transparent 30%),
+      linear-gradient(180deg, #0a0f16 0%, #0d141d 52%, #111823 100%);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .background {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .orb {
+    position: absolute;
+    border-radius: 999px;
+    filter: blur(16px);
+    opacity: 0.75;
+    animation: drift 16s ease-in-out infinite;
+  }
+
+  .orb-a {
+    top: -80px;
+    left: -60px;
+    width: 240px;
+    height: 240px;
+    background: rgba(230, 172, 89, 0.22);
+  }
+
+  .orb-b {
+    right: -70px;
+    top: 220px;
+    width: 280px;
+    height: 280px;
+    background: rgba(112, 146, 255, 0.18);
+    animation-delay: -6s;
+  }
+
+  .grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.45), transparent 85%);
+  }
+
+  .page-shell {
+    position: relative;
+    z-index: 1;
+    width: min(1120px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 24px 0 64px;
+  }
+
+  .hero {
+    padding-top: 12px;
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 8px 0 28px;
+  }
+
+  .brand {
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.9;
+  }
+
+  .nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    color: rgba(239, 243, 248, 0.72);
+  }
+
+  .nav-links a:hover,
+  .brand:hover,
+  .contact-links a:hover {
+    color: #ffffff;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.8fr);
+    gap: 28px;
+    align-items: stretch;
+  }
+
+  .hero-copy,
+  .profile-card,
+  .content-section,
+  .contact-card,
+  .project-card {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(8, 12, 18, 0.58);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(18px);
+  }
+
+  .hero-copy {
+    padding: clamp(28px, 4vw, 48px);
+    border-radius: 28px;
+  }
+
+  .eyebrow {
+    margin: 0 0 12px;
+    color: #f0b774;
+    font-size: 0.8rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  h1,
+  h2,
+  h3 {
+    margin: 0;
+    font-family: 'Fraunces', serif;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+  }
+
+  h1 {
+    max-width: 11ch;
+    font-size: clamp(3.4rem, 8vw, 6.8rem);
+  }
+
+  h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+  }
+
+  h3 {
+    font-size: 1.5rem;
+  }
+
+  .lede,
+  .content-section p,
+  .project-card p,
+  .contact-card p,
+  .profile-lines p {
+    color: rgba(239, 243, 248, 0.78);
+    line-height: 1.7;
+    font-size: 1rem;
+  }
+
+  .lede {
+    max-width: 58ch;
+    margin: 22px 0 0;
+    font-size: 1.08rem;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 28px;
+  }
+
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 18px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    transition:
+      transform 0.2s ease,
+      border-color 0.2s ease,
+      background 0.2s ease;
+  }
+
+  .button:hover {
+    transform: translateY(-1px);
+  }
+
+  .button-primary {
+    background: linear-gradient(135deg, #f5bd7a, #ff8f63);
+    color: #111111;
+    border-color: transparent;
+    font-weight: 700;
+  }
+
+  .button-secondary {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .meta-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin: 28px 0 0;
+  }
+
+  .meta-list div {
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .meta-list dt {
+    font-size: 0.76rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(239, 243, 248, 0.54);
+    margin-bottom: 8px;
+  }
+
+  .meta-list dd {
+    margin: 0;
+    color: #eff3f8;
+    line-height: 1.55;
+  }
+
+  .profile-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 24px;
+    border-radius: 28px;
+  }
+
+  .profile-label,
+  .project-kicker {
+    margin: 0;
+    font-size: 0.8rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(239, 243, 248, 0.56);
+  }
+
+  .profile-ring {
+    display: grid;
+    place-items: center;
+    width: min(100%, 260px);
+    aspect-ratio: 1;
+    margin: 0 auto;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background:
+      radial-gradient(circle at 30% 30%, rgba(255, 214, 156, 0.24), transparent 42%),
+      radial-gradient(circle at 70% 70%, rgba(115, 147, 255, 0.24), transparent 42%),
+      rgba(255, 255, 255, 0.02);
+  }
+
+  .profile-ring span {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(4rem, 10vw, 6rem);
+    color: #ffffff;
+  }
+
+  .profile-lines {
+    display: grid;
+    gap: 10px;
+  }
+
+  .profile-lines p {
+    margin: 0;
+  }
+
+  .profile-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .profile-tags span,
+  .project-card li {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(239, 243, 248, 0.9);
+    font-size: 0.88rem;
+  }
+
+  .content-section {
+    margin-top: 24px;
+    padding: clamp(22px, 3.2vw, 34px);
+    border-radius: 24px;
+  }
+
+  .section-heading {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .project-card {
+    border-radius: 22px;
+    padding: 20px;
+  }
+
+  .project-card h3 {
+    margin-top: 12px;
+  }
+
+  .project-card ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 0;
+    margin: 18px 0 0;
+    list-style: none;
+  }
+
+  .split-section {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 20px;
+    align-items: start;
+  }
+
+  .contact-card {
+    border-radius: 22px;
+    padding: 22px;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .contact-links a {
+    color: #f0b774;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  strong {
+    color: #fff2dc;
+    font-weight: 700;
+  }
+
+  @keyframes drift {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+
+    50% {
+      transform: translate3d(18px, 14px, 0) scale(1.06);
+    }
+  }
+
+  @media (max-width: 920px) {
+    .hero-grid,
+    .split-section,
+    .project-grid,
+    .meta-list {
+      grid-template-columns: 1fr;
+    }
+
+    .topbar {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    h1 {
+      max-width: 12ch;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .page-shell {
+      width: min(100% - 20px, 1120px);
+      padding-bottom: 36px;
+    }
+
+    .hero-copy,
+    .profile-card {
+      padding: 20px;
+    }
+
+    .content-section {
+      padding: 18px;
+    }
+
+    h1 {
+      font-size: clamp(2.8rem, 16vw, 4.2rem);
+    }
+  }
+</style>
