@@ -1,0 +1,26 @@
+{
+  "name": "personalpage",
+  "version": "1.0.0",
+  "description": "My Personal Website",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JBuckle04/personalPage.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/JBuckle04/personalPage/issues"
+  },
+  "homepage": "https://github.com/JBuckle04/personalPage#readme",
+  "dependencies": {
+    "astro": "^6.4.3"
+  }
+}
