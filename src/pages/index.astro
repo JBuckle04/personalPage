@@ -5,6 +5,7 @@ const location = 'UK based, but always open to fun projects globally'
 const githubUsername = 'jbuckle04'
 const linkedin = 'https://www.linkedin.com/in/jamesbuckleuk'
 const featuredProjects = [
+
   {
     name: 'Deepfake Detection Orchestration',
     summary: 'Combining existing deepfake detection techniques into a single tool, serving a user friendly frontend experience',
@@ -21,9 +22,6 @@ const featuredProjects = [
     tags: ['API', 'Human Computer Interaction', 'Frontend'],
   },
 ]
-
-import { Image } from 'astro:assets';
-import backgroundImage from '../images/DTA_EventManager.JPG';
 
 ---
 <!DOCTYPE html>
@@ -53,9 +51,8 @@ import backgroundImage from '../images/DTA_EventManager.JPG';
     </div>
 
     <div class="page-shell">
-      <header
+    <header
       class="hero"
-      style={`background-image: url(${backgroundImage.src});`}
       >
         <nav class="topbar" aria-label="Primary">
           <a class="brand" href="#home">{name}</a>
@@ -181,7 +178,24 @@ import backgroundImage from '../images/DTA_EventManager.JPG';
     inset: 0;
     pointer-events: none;
     overflow: hidden;
+
+    background-image: url('/images/DTA_EventManager.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
+
+  .background::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    180deg,
+    rgba(10, 15, 22, 0.267),
+    rgba(10, 15, 22, 0.95)
+  );
+  } 
 
   .orb {
     position: absolute;
@@ -241,8 +255,8 @@ import backgroundImage from '../images/DTA_EventManager.JPG';
   content: "";
   position: absolute;
   inset: 0;
-
   background:
+    opacity(0.75),
     linear-gradient(
       135deg,
       rgba(10, 15, 22, 0.92),
