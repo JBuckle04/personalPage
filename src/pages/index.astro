@@ -46,14 +46,17 @@ import backgroundImage from '../images/DTA_EventManager.jpg';
     <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
   </head>
   <body>
-    <div class="background" aria-hidden="true"           style={'background-image: url(${backgroundImage}); background-size: cover; background-position: center;'}>
+    <div class="background" aria-hidden="true">
       <span class="orb orb-a"></span>
       <span class="orb orb-b"></span>
       <span class="grid"></span>
     </div>
 
     <div class="page-shell">
-      <header class="hero">
+      <header
+      class="hero"
+      style={`background-image: url(${backgroundImage.src});`}
+      >
         <nav class="topbar" aria-label="Primary">
           <a class="brand" href="#home">{name}</a>
           <div class="nav-links">
@@ -223,9 +226,36 @@ import backgroundImage from '../images/DTA_EventManager.jpg';
     padding: 24px 0 64px;
   }
 
-  .hero {
-    padding-top: 12px;
-  }
+.hero {
+  position: relative;
+  padding-top: 12px;
+  border-radius: 32px;
+  overflow: hidden;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(10, 15, 22, 0.92),
+      rgba(10, 15, 22, 0.75)
+    );
+
+  z-index: 0;
+}
+
+.hero > * {
+  position: relative;
+  z-index: 1;
+}
 
   .topbar {
     display: flex;
@@ -255,12 +285,13 @@ import backgroundImage from '../images/DTA_EventManager.jpg';
     color: #ffffff;
   }
 
-  .hero-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.8fr);
-    gap: 28px;
-    align-items: stretch;
-  }
+.hero-grid {
+  min-height: 70vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.8fr);
+  gap: 28px;
+  align-items: center;
+}
 
   /* If there's no profile card (aside removed), make the hero copy span both columns */
   .hero-grid:not(:has(.profile-card)) > .hero-copy {
@@ -273,7 +304,7 @@ import backgroundImage from '../images/DTA_EventManager.jpg';
   .contact-card,
   .project-card {
     border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(8, 12, 18, 0.58);
+    background: rgba(8, 12, 18, 0.72);
     box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
     backdrop-filter: blur(18px);
   }
