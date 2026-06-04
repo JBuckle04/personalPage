@@ -21,6 +21,10 @@ const featuredProjects = [
     tags: ['API', 'Human Computer Interaction', 'Frontend'],
   },
 ]
+
+import { Image } from 'astro:assets';
+import backgroundImage from '../images/DTA_EventManager.jpg';
+
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -42,7 +46,7 @@ const featuredProjects = [
     <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
   </head>
   <body>
-    <div class="background" aria-hidden="true">
+    <div class="background" aria-hidden="true"           style={'background-image: url(${backgroundImage}); background-size: cover; background-position: center;'}>
       <span class="orb orb-a"></span>
       <span class="orb orb-b"></span>
       <span class="grid"></span>
