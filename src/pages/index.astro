@@ -1,24 +1,23 @@
 ---
 const name = 'James Buckle'
-const role = 'Data and Cyber Professional'
-const location = 'UK based, but always open to fun projects globally'
+const role = 'Data and cyber professional'
+const location = 'London'
 const githubUsername = 'jbuckle04'
 const linkedin = 'https://www.linkedin.com/in/jamesbuckleuk'
 const featuredProjects = [
-
   {
     name: 'Deepfake Detection Orchestration',
-    summary: 'Combining existing deepfake detection techniques into a single tool, serving a user friendly frontend experience',
+    summary: 'Bringing together multiple detection approaches into one practical workflow, with a clear experience for real users.',
     tags: ['Systems Design', 'User Experience', 'Project Management'],
   },
   {
     name: 'Open Cards',
-    summary: 'A rapidly prototyped flashcard tool built to specifically meet my own requirements',
+    summary: 'Building a personal revision tool that fits how I learn, rather than forcing me into a generic study workflow.',
     tags: ['Prompt Engineering', 'User Experience', 'Testing'],
   },
   {
     name: 'Resolume Colour Picker',
-    summary: 'A simple app to send API commands to Resolume for use in live production environments',
+    summary: 'Creating a simpler control surface for a live-visual API so the tool feels faster and easier to use in real time.',
     tags: ['API', 'Human Computer Interaction', 'Frontend'],
   },
 ]
@@ -33,7 +32,7 @@ const featuredProjects = [
       name="description"
       content={`Personal site for ${name} - projects, writing, and contact details.`}
     />
-    <meta name="theme-color" content="#0c121a" />
+    <meta name="theme-color" content="#f5efe7" />
     <title>{name} | Personal Page</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -44,16 +43,8 @@ const featuredProjects = [
     <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
   </head>
   <body>
-    <div class="background" aria-hidden="true">
-      <span class="orb orb-a"></span>
-      <span class="orb orb-b"></span>
-      <span class="grid"></span>
-    </div>
-
     <div class="page-shell">
-    <header
-      class="hero"
-      >
+      <header class="hero">
         <nav class="topbar" aria-label="Primary">
           <a class="brand" href="#home">{name}</a>
           <div class="nav-links">
@@ -65,19 +56,15 @@ const featuredProjects = [
 
         <div class="hero-grid" id="home">
           <div class="hero-copy">
-            <h1>
-              Seeing the big picture to deliver results that matter.
-            </h1>
+            <p class="eyebrow">London / Data / Cyber / Creative tech</p>
+            <h1>I work where data, systems and people meet.</h1>
             <p class="lede">
-              Hi, I’m <strong>{name}</strong>, a {role.toLowerCase()}. I bring the creative perspective to solve
-              complex problems. Passionate about technical innovation and human-centered systems.
+              I’m <strong>{name}</strong>, a {role.toLowerCase()} with a background in live events technology and a growing focus on practical problem solving.
+              I like building tools that are useful, thoughtful, and make complex work feel easier to understand.
             </p>
 
             <div class="actions">
-              <a class="button button-primary" href={`https://github.com/${githubUsername}`} target="_blank" rel="noopener noreferrer">
-                View GitHub
-              </a>
-              <a class="button button-secondary" href={linkedin} target="_blank" rel="noopener noreferrer">
+              <a class="button button-primary" href={linkedin} target="_blank" rel="noopener noreferrer">
                 Connect on LinkedIn
               </a>
             </div>
@@ -85,15 +72,15 @@ const featuredProjects = [
             <dl class="meta-list">
               <div>
                 <dt>Focus</dt>
-                <dd>Data & cybersecurity consulting, fun side-projects leaning into creative tech</dd>
+                <dd>Data, cybersecurity, and hands-on technical projects</dd>
               </div>
               <div>
                 <dt>Location</dt>
                 <dd>{location}</dd>
               </div>
               <div>
-                <dt>Status</dt>
-                <dd>Existing in the brave new world of a graduate role, not looking to take on new projects currently.</dd>
+                <dt>Current</dt>
+                <dd>Taking on smaller projects across creative tech and systems design</dd>
               </div>
             </dl>
           </div>
@@ -103,24 +90,26 @@ const featuredProjects = [
       <main>
         <section class="content-section" id="about">
           <div class="section-heading">
-            <p class="eyebrow">Who Am I?</p>
-            <h2>Keeping technology human, accessible and forward-looking.</h2>
+            <p class="eyebrow">About</p>
+            <h2>Technically minded, but always thinking about the human side.</h2>
           </div>
           <p>
-            Currently i'm starting my career in the data consulting world, with a strong passion and grounding in cybersecurity. Problem Solving is my drive, leading me onto many rapid projects to solve problems I come across in my previous work in live events technology and academia. 
-            I care deeply for the usability of technology, and aim to place the user at the centre of my work. I'm always up to discuss new ideas and side projects, particularly in cyberphysical systems, or just anything cool!
+            I’m starting my career in data and consulting, with a strong grounding in cybersecurity and a lot of interest in how systems work in the real world. My background in live events technology taught me to think quickly, stay calm under pressure, and care about reliability.
+          </p>
+          <p>
+            I care about making technology more usable, more transparent, and more useful to the people around it. I’m always happy to talk through new ideas, side projects, or weird little problems worth solving.
           </p>
         </section>
 
         <section class="content-section" id="work">
           <div class="section-heading">
-            <p class="eyebrow">What I've Been Working On</p>
+            <p class="eyebrow">Selected work</p>
           </div>
 
           <div class="project-grid">
             {featuredProjects.map((project) => (
               <article class="project-card">
-                <p class="project-kicker">Featured project</p>
+                <p class="project-kicker">Project</p>
                 <h3>{project.name}</h3>
                 <p>{project.summary}</p>
                 <ul>
@@ -133,17 +122,17 @@ const featuredProjects = [
 
         <section class="content-section split-section" id="contact">
           <div class="section-heading">
-            <p class="eyebrow">Reach Out</p>
-            <h2>Always building my network</h2>
+            <p class="eyebrow">Get in touch</p>
+            <h2>Always open to a good conversation.</h2>
           </div>
 
           <div class="contact-card">
             <p>
-              Always open to discussing new ideas, projects or anything in between. Feel free to reach out via Linkedin!
+              I’m always interested in new ideas, useful projects, and people working on interesting problems. Feel free to reach out on LinkedIn or GitHub.
             </p>
             <div class="contact-links">
-              <a href={`https://github.com/${githubUsername}`} target="_blank" rel="noopener noreferrer">GitHub profile</a>
-              <a href={linkedin} target="_blank" rel="noopener noreferrer">Linkedin Profile</a>
+              <a href={`https://github.com/${githubUsername}`} target="_blank" rel="noopener noreferrer">GitHub</a>
+              <a href={linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
             </div>
           </div>
         </section>
@@ -161,11 +150,11 @@ const featuredProjects = [
     margin: 0;
     min-height: 100vh;
     font-family: 'Red Hat Display', sans-serif;
-    color: #eff3f8;
+    color: #1d1d1b;
     background:
-      radial-gradient(circle at top left, rgba(225, 175, 108, 0.2), transparent 35%),
-      radial-gradient(circle at right 10%, rgba(120, 164, 255, 0.18), transparent 30%),
-      linear-gradient(180deg, #0a0f16 0%, #0d141d 52%, #111823 100%);
+      radial-gradient(circle at top left, rgba(166, 128, 84, 0.08), transparent 30%),
+      radial-gradient(circle at bottom right, rgba(88, 103, 127, 0.08), transparent 30%),
+      #f5efe7;
   }
 
   a {
@@ -173,167 +162,70 @@ const featuredProjects = [
     text-decoration: none;
   }
 
-  .background {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    overflow: hidden;
-
-    background-image: url('/images/DTA_EventManager.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-
-  .background::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-
-  background: linear-gradient(
-    180deg,
-    rgba(10, 15, 22, 0.267),
-    rgba(10, 15, 22, 0.95)
-  );
-  } 
-
-  .orb {
-    position: absolute;
-    border-radius: 999px;
-    filter: blur(16px);
-    opacity: 0.75;
-    animation: drift 16s ease-in-out infinite;
-  }
-
-  .orb-a {
-    top: -80px;
-    left: -60px;
-    width: 240px;
-    height: 240px;
-    background: rgba(230, 172, 89, 0.22);
-  }
-
-  .orb-b {
-    right: -70px;
-    top: 220px;
-    width: 280px;
-    height: 280px;
-    background: rgba(112, 146, 255, 0.18);
-    animation-delay: -6s;
-  }
-
-  .grid {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-    background-size: 56px 56px;
-    mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.45), transparent 85%);
-  }
-
   .page-shell {
     position: relative;
     z-index: 1;
     width: min(1120px, calc(100% - 32px));
     margin: 0 auto;
-    padding: 24px 0 64px;
+    padding: 26px 0 64px;
   }
 
-.hero {
-  position: relative;
-  padding-top: 12px;
-  border-radius: 32px;
-  overflow: hidden;
-
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    opacity(0.75),
-    linear-gradient(
-      135deg,
-      rgba(10, 15, 22, 0.92),
-      rgba(10, 15, 22, 0.75)
-    );
-
-  z-index: 0;
-}
-
-.hero > * {
-  position: relative;
-  z-index: 1;
-}
+  .hero {
+    position: relative;
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.76);
+    border: 1px solid rgba(30, 24, 18, 0.08);
+    box-shadow: 0 16px 34px rgba(20, 19, 15, 0.06);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+  }
 
   .topbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    padding: 8px 0 28px;
+    padding: 18px 24px 10px;
   }
 
   .brand {
-    font-size: 0.95rem;
-    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    opacity: 0.9;
+    color: #2a2926;
+    font-weight: 700;
   }
 
   .nav-links {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px;
-    color: rgba(239, 243, 248, 0.72);
+    gap: 18px;
+    color: rgba(29, 29, 27, 0.7);
+    font-size: 0.96rem;
   }
 
   .nav-links a:hover,
   .brand:hover,
   .contact-links a:hover {
-    color: #ffffff;
+    color: #171614;
   }
 
-.hero-grid {
-  min-height: 70vh;
-  display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.8fr);
-  gap: 28px;
-  align-items: center;
-}
-
-  /* If there's no profile card (aside removed), make the hero copy span both columns */
-  .hero-grid:not(:has(.profile-card)) > .hero-copy {
-    grid-column: 1 / -1;
-  }
-
-  .hero-copy,
-  .profile-card,
-  .content-section,
-  .contact-card,
-  .project-card {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(8, 12, 18, 0.72);
-    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
-    backdrop-filter: blur(18px);
+  .hero-grid {
+    display: block;
+    padding: 10px 24px 24px;
   }
 
   .hero-copy {
-    padding: clamp(28px, 4vw, 48px);
-    border-radius: 28px;
+    padding: clamp(18px, 4vw, 24px) 0 4px;
   }
 
   .eyebrow {
     margin: 0 0 12px;
-    color: #f0b774;
-    font-size: 0.8rem;
-    letter-spacing: 0.18em;
+    color: #7f5f3a;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
+    font-weight: 700;
   }
 
   h1,
@@ -341,58 +233,57 @@ const featuredProjects = [
   h3 {
     margin: 0;
     font-family: 'Fraunces', serif;
-    letter-spacing: -0.03em;
-    line-height: 0.95;
+    letter-spacing: -0.04em;
+    line-height: 0.96;
+    color: #171614;
   }
 
   h1 {
-    max-width: 11ch;
-    font-size: clamp(3.4rem, 8vw, 6.8rem);
+    max-width: 12ch;
+    font-size: clamp(3rem, 7vw, 6rem);
   }
 
   h2 {
-    font-size: clamp(2rem, 4vw, 3rem);
+    font-size: clamp(2rem, 3.6vw, 3rem);
+    max-width: 13ch;
   }
 
   h3 {
-    font-size: 1.5rem;
+    font-size: 1.54rem;
   }
 
   .lede,
   .content-section p,
   .project-card p,
-  .contact-card p,
-  .profile-lines p {
-    color: rgba(239, 243, 248, 0.78);
+  .contact-card p {
+    color: rgba(29, 29, 27, 0.8);
     line-height: 1.7;
-    font-size: 1rem;
+    font-size: 1.02rem;
   }
 
   .lede {
-    max-width: 58ch;
-    margin: 22px 0 0;
-    font-size: 1.08rem;
+    max-width: 60ch;
+    margin: 20px 0 0;
+    font-size: 1.12rem;
   }
 
   .actions {
     display: flex;
     flex-wrap: wrap;
     gap: 14px;
-    margin-top: 28px;
+    margin-top: 26px;
   }
 
   .button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 48px;
+    min-height: 46px;
     padding: 0 18px;
     border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    transition:
-      transform 0.2s ease,
-      border-color 0.2s ease,
-      background 0.2s ease;
+    border: 1px solid rgba(23, 22, 20, 0.12);
+    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    font-weight: 700;
   }
 
   .button:hover {
@@ -400,117 +291,51 @@ const featuredProjects = [
   }
 
   .button-primary {
-    background: linear-gradient(135deg, #f5bd7a, #ff8f63);
-    color: #111111;
+    background: #1a1a18;
+    color: #f6f0e8;
     border-color: transparent;
-    font-weight: 700;
-  }
-
-  .button-secondary {
-    background: rgba(255, 255, 255, 0.03);
   }
 
   .meta-list {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px;
+    gap: 16px;
     margin: 28px 0 0;
   }
 
   .meta-list div {
     padding-top: 14px;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-top: 1px solid rgba(23, 22, 20, 0.12);
   }
 
   .meta-list dt {
-    font-size: 0.76rem;
+    font-size: 0.7rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: rgba(239, 243, 248, 0.54);
+    color: rgba(29, 29, 27, 0.56);
     margin-bottom: 8px;
+    font-weight: 700;
   }
 
   .meta-list dd {
     margin: 0;
-    color: #eff3f8;
+    color: #1d1d1b;
     line-height: 1.55;
   }
 
-  .profile-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 20px;
-    padding: 24px;
-    border-radius: 28px;
-  }
-
-  .profile-label,
-  .project-kicker {
-    margin: 0;
-    font-size: 0.8rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: rgba(239, 243, 248, 0.56);
-  }
-
-  .profile-ring {
-    display: grid;
-    place-items: center;
-    width: min(100%, 260px);
-    aspect-ratio: 1;
-    margin: 0 auto;
-    border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background:
-      radial-gradient(circle at 30% 30%, rgba(255, 214, 156, 0.24), transparent 42%),
-      radial-gradient(circle at 70% 70%, rgba(115, 147, 255, 0.24), transparent 42%),
-      rgba(255, 255, 255, 0.02);
-  }
-
-  .profile-ring span {
-    font-family: 'Fraunces', serif;
-    font-size: clamp(4rem, 10vw, 6rem);
-    color: #ffffff;
-  }
-
-  .profile-lines {
-    display: grid;
-    gap: 10px;
-  }
-
-  .profile-lines p {
-    margin: 0;
-  }
-
-  .profile-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .profile-tags span,
-  .project-card li {
-    display: inline-flex;
-    align-items: center;
-    min-height: 32px;
-    padding: 0 12px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.06);
-    color: rgba(239, 243, 248, 0.9);
-    font-size: 0.88rem;
-  }
-
   .content-section {
-    margin-top: 24px;
-    padding: clamp(22px, 3.2vw, 34px);
+    margin-top: 22px;
+    padding: clamp(22px, 3vw, 32px);
     border-radius: 24px;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(30, 24, 18, 0.08);
+    box-shadow: 0 10px 24px rgba(20, 19, 15, 0.03);
   }
 
   .section-heading {
     display: grid;
-    gap: 12px;
-    margin-bottom: 18px;
+    gap: 10px;
+    margin-bottom: 16px;
   }
 
   .project-grid {
@@ -520,8 +345,19 @@ const featuredProjects = [
   }
 
   .project-card {
-    border-radius: 22px;
+    border-radius: 20px;
+    background: #f6f1ea;
+    border: 1px solid rgba(31, 24, 17, 0.08);
     padding: 20px;
+  }
+
+  .project-kicker {
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(29, 29, 27, 0.58);
+    font-weight: 700;
   }
 
   .project-card h3 {
@@ -531,10 +367,22 @@ const featuredProjects = [
   .project-card ul {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
     padding: 0;
     margin: 18px 0 0;
     list-style: none;
+  }
+
+  .project-card li {
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: rgba(26, 26, 24, 0.04);
+    color: rgba(29, 29, 27, 0.82);
+    font-size: 0.82rem;
+    border: 1px solid rgba(26, 26, 24, 0.06);
   }
 
   .split-section {
@@ -545,54 +393,41 @@ const featuredProjects = [
   }
 
   .contact-card {
-    border-radius: 22px;
+    border-radius: 20px;
+    background: #f6f1ea;
+    border: 1px solid rgba(31, 24, 17, 0.08);
     padding: 22px;
   }
 
   .contact-links {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 18px;
     margin-top: 20px;
   }
 
   .contact-links a {
-    color: #f0b774;
+    color: #4a3d2f;
     text-decoration: underline;
     text-underline-offset: 0.2em;
+    font-weight: 600;
   }
 
   strong {
-    color: #fff2dc;
+    color: #201d1a;
     font-weight: 700;
   }
 
-  @keyframes drift {
-    0%,
-    100% {
-      transform: translate3d(0, 0, 0) scale(1);
-    }
-
-    50% {
-      transform: translate3d(18px, 14px, 0) scale(1.06);
-    }
-  }
-
   @media (max-width: 920px) {
-    .hero-grid,
-    .split-section,
     .project-grid,
-    .meta-list {
+    .meta-list,
+    .split-section {
       grid-template-columns: 1fr;
     }
 
     .topbar {
       align-items: flex-start;
       flex-direction: column;
-    }
-
-    h1 {
-      max-width: 12ch;
     }
   }
 
@@ -602,13 +437,17 @@ const featuredProjects = [
       padding-bottom: 36px;
     }
 
-    .hero-copy,
-    .profile-card {
-      padding: 20px;
+    .hero-grid,
+    .topbar,
+    .content-section,
+    .contact-card,
+    .project-card {
+      padding-left: 18px;
+      padding-right: 18px;
     }
 
-    .content-section {
-      padding: 18px;
+    .topbar {
+      padding-top: 16px;
     }
 
     h1 {
