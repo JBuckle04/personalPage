@@ -1,8 +1,13 @@
 ---
 const name = 'James Buckle'
 
-// Replace with your real Azure App Service endpoint.
 const apiUrl = "https://flighttracker-d6gcdgfycedvc9ek.westus3-01.azurewebsites.net/getFlights"
+
+if (!apiUrl?.startsWith('https://')) {
+  throw new Error(
+    'PUBLIC_FLIGHTS_API_URL must be an absolute HTTPS URL'
+  )
+}
 ---
 
 <!DOCTYPE html>
@@ -20,6 +25,7 @@ const apiUrl = "https://flighttracker-d6gcdgfycedvc9ek.westus3-01.azurewebsites.
 
     <title>Flight Tracker | James Buckle</title>
 
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
@@ -28,6 +34,7 @@ const apiUrl = "https://flighttracker-d6gcdgfycedvc9ek.westus3-01.azurewebsites.
       rel="stylesheet"
     />
 
+    <!-- Leaflet -->
     <link
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -37,7 +44,9 @@ const apiUrl = "https://flighttracker-d6gcdgfycedvc9ek.westus3-01.azurewebsites.
   <body>
     <div class="page-shell">
 
+      <!-- HERO -->
       <header class="hero">
+
         <nav class="topbar" aria-label="Primary">
           <a class="brand" href="/">{name}</a>
 
@@ -50,56 +59,94 @@ const apiUrl = "https://flighttracker-d6gcdgfycedvc9ek.westus3-01.azurewebsites.
 
         <div class="hero-grid">
           <div class="hero-copy">
-            <p class="eyebrow">Live project / Data engineering</p>
+
+            <p class="eyebrow">
+              Live project / Data engineering
+            </p>
 
             <h1>Flights over London.</h1>
 
             <p class="lede">
-              A live view of aircraft around London, built from real-time
-              position data and enriched with route information through
-              Databricks.
+              A live view of aircraft around London, built from
+              real-time position data and enriched with route
+              information through Databricks.
             </p>
 
             <div class="tracker-status">
-              <span class="live-indicator"></span>
-              <span id="status-text">Loading flight data...</span>
+
+              <span
+                id="live-indicator"
+                class="live-indicator loading"
+              ></span>
+
+              <span id="status-text">
+                Loading flight data...
+              </span>
 
               <span class="status-divider"></span>
 
-              <span id="aircraft-count">— aircraft</span>
+              <span id="aircraft-count">
+                — aircraft
+              </span>
 
               <span class="status-divider"></span>
 
-              <span id="last-updated">Waiting for first update</span>
+              <span id="last-updated">
+                Waiting for first update
+              </span>
+
             </div>
           </div>
         </div>
+
       </header>
 
 
       <main>
 
-        <section class="content-section tracker-section" id="tracker">
+        <!-- TRACKER -->
+        <section
+          class="content-section tracker-section"
+          id="tracker"
+        >
 
           <div class="tracker-heading">
+
             <div>
               <p class="eyebrow">Live tracker</p>
+
               <h2>Aircraft nearby.</h2>
             </div>
 
-            <button id="refresh-button" type="button">
+            <button
+              id="refresh-button"
+              type="button"
+            >
               Refresh
             </button>
+
           </div>
 
-          <div id="map"></div>
 
+          <!-- MAP -->
+          <div
+            id="map"
+            role="application"
+            aria-label="Map showing aircraft around London"
+          ></div>
+
+
+          <!-- SELECTED AIRCRAFT -->
           <div
             id="flight-detail"
             class="flight-detail hidden"
           >
-            <div>
-              <p class="project-kicker">Selected aircraft</p>
+
+            <div class="aircraft-title">
+
+              <p class="project-kicker">
+                Selected aircraft
+              </p>
 
               <h3 id="detail-flight">
                 —
@@ -111,15 +158,29 @@ const apiUrl = "https://flighttracker-d6gcdgfycedvc9ek.westus3-01.azurewebsites.
               >
                 —
               </p>
+
             </div>
+
 
             <div class="route">
-              <span id="detail-origin">—</span>
-              <span class="route-line">→</span>
-              <span id="detail-destination">—</span>
+
+              <span id="detail-origin">
+                —
+              </span>
+
+              <span class="route-line">
+                →
+              </span>
+
+              <span id="detail-destination">
+                —
+              </span>
+
             </div>
 
+
             <dl class="aircraft-meta">
+
               <div>
                 <dt>ICAO24</dt>
                 <dd id="detail-icao">—</dd>
@@ -129,34 +190,46 @@ const apiUrl = "https://flighttracker-d6gcdgfycedvc9ek.westus3-01.azurewebsites.
                 <dt>Position</dt>
                 <dd id="detail-position">—</dd>
               </div>
+
             </dl>
+
           </div>
 
         </section>
 
 
+        <!-- ABOUT -->
         <section
           class="content-section split-section"
           id="about"
         >
 
           <div class="section-heading">
-            <p class="eyebrow">Behind the project</p>
 
-            <h2>From aircraft signal to web map.</h2>
+            <p class="eyebrow">
+              Behind the project
+            </p>
+
+            <h2>
+              From aircraft signal to web map.
+            </h2>
+
           </div>
+
 
           <div class="about-project">
 
             <p>
-              Aircraft position data is collected, processed and enriched
-              with route information before being stored in Databricks.
+              Aircraft position data is collected, processed
+              and enriched with route information before being
+              stored in Databricks.
             </p>
 
             <p>
-              A lightweight Flask API running on Azure App Service exposes
-              the current aircraft data to this page, with caching used to
-              reduce unnecessary queries against the data platform.
+              A lightweight Flask API running on Azure App
+              Service exposes the current aircraft data to this
+              page, with caching used to reduce unnecessary
+              queries against the data platform.
             </p>
 
             <ul class="tech-list">
@@ -173,7 +246,14 @@ const apiUrl = "https://flighttracker-d6gcdgfycedvc9ek.westus3-01.azurewebsites.
         </section>
 
       </main>
+
     </div>
+
+
+    <!-- Leaflet JS must load before our code -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    ></script>
 
 
     <script
@@ -181,9 +261,10 @@ const apiUrl = "https://flighttracker-d6gcdgfycedvc9ek.westus3-01.azurewebsites.
       define:vars={{ apiUrl }}
     >
       let map
-      let markers = new Map()
 
-      const POLL_INTERVAL = 30000
+      const markers = new Map()
+
+      const POLL_INTERVAL_MS = 30000
 
       const countElement =
         document.getElementById('aircraft-count')
@@ -197,204 +278,411 @@ const apiUrl = "https://flighttracker-d6gcdgfycedvc9ek.westus3-01.azurewebsites.
       const refreshButton =
         document.getElementById('refresh-button')
 
+      const liveIndicator =
+        document.getElementById('live-indicator')
+
+
+      // --------------------------------------------------
+      // MAP
+      // --------------------------------------------------
 
       function initialiseMap() {
-        map = L.map('map', {
-          zoomControl: true
-        }).setView(
+
+        map = L.map(
+          'map',
+          {
+            zoomControl: true
+          }
+        ).setView(
           [51.5074, -0.1278],
           9
         )
+
 
         L.tileLayer(
           'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
           {
             maxZoom: 19,
-            attribution: '&copy; OpenStreetMap contributors'
+            attribution:
+              '&copy; OpenStreetMap contributors'
           }
         ).addTo(map)
+
+
+        // Ensures Leaflet recalculates against
+        // the final rendered container dimensions.
+        setTimeout(
+          () => map.invalidateSize(),
+          100
+        )
       }
 
 
+      // --------------------------------------------------
+      // AIRCRAFT ICON
+      // --------------------------------------------------
+
       function createAircraftIcon(resolved) {
+
         return L.divIcon({
-          className: 'aircraft-marker-container',
+          className:
+            'aircraft-marker-container',
 
           html: `
             <div class="aircraft-marker ${
               resolved ? '' : 'unresolved'
             }">
-              ✈
+              <span>✈</span>
             </div>
           `,
 
-          iconSize: [34, 34],
-          iconAnchor: [17, 17]
+          iconSize:
+            [36, 36],
+
+          iconAnchor:
+            [18, 18]
         })
       }
 
 
-      function selectFlight(flight) {
-        const panel =
-          document.getElementById('flight-detail')
+      // --------------------------------------------------
+      // AIRCRAFT DETAILS
+      // --------------------------------------------------
 
-        panel.classList.remove('hidden')
+      function selectFlight(flight) {
+
+        const panel =
+          document.getElementById(
+            'flight-detail'
+          )
+
+        panel.classList.remove(
+          'hidden'
+        )
+
 
         document.getElementById(
           'detail-flight'
         ).textContent =
-          flight.flight_id || 'Unknown aircraft'
+          flight.flight_id ||
+          'Unknown aircraft'
+
 
         document.getElementById(
           'detail-airline'
         ).textContent =
-          flight.airline || 'Airline unavailable'
+          flight.airline ||
+          'Airline unavailable'
+
 
         document.getElementById(
           'detail-origin'
         ).textContent =
-          flight.origin || '—'
+          flight.origin ||
+          '—'
+
 
         document.getElementById(
           'detail-destination'
         ).textContent =
-          flight.destination || '—'
+          flight.destination ||
+          '—'
+
 
         document.getElementById(
           'detail-icao'
         ).textContent =
-          flight.icao24 || '—'
+          flight.icao24 ||
+          '—'
 
-        document.getElementById(
-          'detail-position'
-        ).textContent =
-          `${flight.lat.toFixed(4)}, ${flight.lon.toFixed(4)}`
+
+        if (
+          typeof flight.lat === 'number' &&
+          typeof flight.lon === 'number'
+        ) {
+
+          document.getElementById(
+            'detail-position'
+          ).textContent =
+            `${flight.lat.toFixed(4)}, ${flight.lon.toFixed(4)}`
+
+        } else {
+
+          document.getElementById(
+            'detail-position'
+          ).textContent =
+            'Unavailable'
+
+        }
       }
 
+
+      // --------------------------------------------------
+      // MARKER UPDATE
+      // --------------------------------------------------
 
       function updateMarkers(flights) {
-        const currentAircraft = new Set()
 
-        flights.forEach((flight) => {
-          if (
-            typeof flight.lat !== 'number' ||
-            typeof flight.lon !== 'number'
-          ) {
-            return
-          }
+        const currentAircraft =
+          new Set()
 
-          currentAircraft.add(flight.icao24)
 
-          const resolved =
-            Boolean(
-              flight.airline ||
-              flight.origin ||
-              flight.destination
+        flights.forEach(
+          (flight) => {
+
+            if (
+              typeof flight.lat !== 'number' ||
+              typeof flight.lon !== 'number'
+            ) {
+              return
+            }
+
+
+            const identifier =
+              flight.icao24
+
+
+            if (!identifier) {
+              return
+            }
+
+
+            currentAircraft.add(
+              identifier
             )
 
-          const existing =
-            markers.get(flight.icao24)
 
-          if (existing) {
-            existing.setLatLng([
-              flight.lat,
-              flight.lon
-            ])
+            const resolved =
+              Boolean(
+                flight.airline ||
+                flight.origin ||
+                flight.destination
+              )
 
-            existing.flight = flight
 
-            return
-          }
+            const existing =
+              markers.get(
+                identifier
+              )
 
-          const marker = L.marker(
-            [flight.lat, flight.lon],
-            {
-              icon:
-                createAircraftIcon(resolved)
+
+            // ------------------------------
+            // MOVE EXISTING AIRCRAFT
+            // ------------------------------
+
+            if (existing) {
+
+              existing.setLatLng([
+                flight.lat,
+                flight.lon
+              ])
+
+              existing.flight =
+                flight
+
+              return
             }
-          )
-
-          marker.flight = flight
-
-          marker.on('click', () => {
-            selectFlight(marker.flight)
-          })
-
-          marker.addTo(map)
-
-          markers.set(
-            flight.icao24,
-            marker
-          )
-        })
 
 
-        for (const [icao, marker] of markers) {
-          if (!currentAircraft.has(icao)) {
+            // ------------------------------
+            // NEW AIRCRAFT
+            // ------------------------------
+
+            const marker =
+              L.marker(
+                [
+                  flight.lat,
+                  flight.lon
+                ],
+                {
+                  icon:
+                    createAircraftIcon(
+                      resolved
+                    )
+                }
+              )
+
+
+            marker.flight =
+              flight
+
+
+            marker.on(
+              'click',
+              () => {
+                selectFlight(
+                  marker.flight
+                )
+              }
+            )
+
+
+            marker.addTo(
+              map
+            )
+
+
+            markers.set(
+              identifier,
+              marker
+            )
+          }
+        )
+
+
+        // ------------------------------
+        // REMOVE AIRCRAFT NO LONGER SEEN
+        // ------------------------------
+
+        for (
+          const [icao, marker]
+          of markers
+        ) {
+
+          if (
+            !currentAircraft.has(
+              icao
+            )
+          ) {
+
             marker.remove()
-            markers.delete(icao)
+
+            markers.delete(
+              icao
+            )
           }
         }
       }
 
 
+      // --------------------------------------------------
+      // API
+      // --------------------------------------------------
+
       async function loadFlights() {
-        if (!apiUrl) {
-          statusElement.textContent =
-            'API not configured'
-          return
-        }
 
         statusElement.textContent =
           'Updating...'
 
-        refreshButton.disabled = true
+        liveIndicator.classList.add(
+          'loading'
+        )
+
+        refreshButton.disabled =
+          true
+
 
         try {
+
           const response =
-            await fetch(apiUrl)
+            await fetch(
+              apiUrl,
+              {
+                method: 'GET',
+                headers: {
+                  Accept:
+                    'application/json'
+                }
+              }
+            )
+
 
           if (!response.ok) {
+
             throw new Error(
               `API returned ${response.status}`
             )
           }
 
+
           const data =
             await response.json()
 
-          updateMarkers(data.flights)
+
+          if (
+            !Array.isArray(
+              data.flights
+            )
+          ) {
+
+            throw new Error(
+              'Invalid API response'
+            )
+          }
+
+
+          updateMarkers(
+            data.flights
+          )
+
 
           countElement.textContent =
-            `${data.count} aircraft`
+            `${data.flights.length} ${
+              data.flights.length === 1
+                ? 'aircraft'
+                : 'aircraft'
+            }`
+
 
           statusElement.textContent =
             'Live'
 
+
+          liveIndicator.classList.remove(
+            'loading'
+          )
+
+
+          const now =
+            new Date()
+
+
           updatedElement.textContent =
-            `Updated ${new Date().toLocaleTimeString([], {
-              hour: '2-digit',
-              minute: '2-digit'
-            })}`
+            `Updated ${
+              now.toLocaleTimeString(
+                [],
+                {
+                  hour: '2-digit',
+                  minute: '2-digit'
+                }
+              )
+            }`
+
 
         } catch (error) {
+
           console.error(
             'Flight API request failed:',
             error
           )
 
+
           statusElement.textContent =
             'Data temporarily unavailable'
 
+
+          liveIndicator.classList.add(
+            'error'
+          )
+
+
         } finally {
-          refreshButton.disabled = false
+
+          refreshButton.disabled =
+            false
+
         }
       }
 
 
+      // --------------------------------------------------
+      // START
+      // --------------------------------------------------
+
       window.addEventListener(
         'DOMContentLoaded',
         () => {
+
           initialiseMap()
 
           refreshButton.addEventListener(
@@ -404,18 +692,13 @@ const apiUrl = "https://flighttracker-d6gcdgfycedvc9ek.westus3-01.azurewebsites.
 
           loadFlights()
 
-          setInterval(
+          window.setInterval(
             loadFlights,
-            POLL_INTERVAL
+            POLL_INTERVAL_MS
           )
         }
       )
     </script>
-
-
-    <script
-      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    ></script>
 
   </body>
 </html>
@@ -430,13 +713,15 @@ const apiUrl = "https://flighttracker-d6gcdgfycedvc9ek.westus3-01.azurewebsites.
 
   body {
     margin: 0;
+
     min-height: 100vh;
 
     font-family:
       'Red Hat Display',
       sans-serif;
 
-    color: #1d1d1b;
+    color:
+      #1d1d1b;
 
     background:
       radial-gradient(
@@ -444,25 +729,30 @@ const apiUrl = "https://flighttracker-d6gcdgfycedvc9ek.westus3-01.azurewebsites.
         rgba(166, 128, 84, 0.08),
         transparent 30%
       ),
-
       radial-gradient(
         circle at bottom right,
         rgba(88, 103, 127, 0.08),
         transparent 30%
       ),
-
       #f5efe7;
   }
 
 
   a {
     color: inherit;
+
     text-decoration: none;
   }
 
 
+  /* --------------------------------------------------
+     PAGE
+  -------------------------------------------------- */
+
   .page-shell {
+
     position: relative;
+
     z-index: 1;
 
     width:
@@ -471,42 +761,73 @@ const apiUrl = "https://flighttracker-d6gcdgfycedvc9ek.westus3-01.azurewebsites.
         calc(100% - 32px)
       );
 
-    margin: 0 auto;
+    margin:
+      0 auto;
 
     padding:
       26px 0 64px;
   }
 
 
-  .hero {
-    position: relative;
+  /* --------------------------------------------------
+     HERO
+  -------------------------------------------------- */
 
-    border-radius: 28px;
+  .hero {
+
+    position:
+      relative;
+
+    border-radius:
+      28px;
 
     background:
-      rgba(255, 255, 255, 0.76);
+      rgba(
+        255,
+        255,
+        255,
+        0.76
+      );
 
     border:
       1px solid
-      rgba(30, 24, 18, 0.08);
+      rgba(
+        30,
+        24,
+        18,
+        0.08
+      );
 
     box-shadow:
       0 16px 34px
-      rgba(20, 19, 15, 0.06);
+      rgba(
+        20,
+        19,
+        15,
+        0.06
+      );
 
     backdrop-filter:
       blur(10px);
 
-    overflow: hidden;
+    overflow:
+      hidden;
   }
 
 
   .topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
 
-    gap: 16px;
+    display:
+      flex;
+
+    align-items:
+      center;
+
+    justify-content:
+      space-between;
+
+    gap:
+      16px;
 
     padding:
       18px 24px 10px;
@@ -514,7 +835,9 @@ const apiUrl = "https://flighttracker-d6gcdgfycedvc9ek.westus3-01.azurewebsites.
 
 
   .brand {
-    font-size: 0.8rem;
+
+    font-size:
+      0.8rem;
 
     letter-spacing:
       0.12em;
@@ -522,20 +845,32 @@ const apiUrl = "https://flighttracker-d6gcdgfycedvc9ek.westus3-01.azurewebsites.
     text-transform:
       uppercase;
 
-    color: #2a2926;
+    color:
+      #2a2926;
 
-    font-weight: 700;
+    font-weight:
+      700;
   }
 
 
   .nav-links {
-    display: flex;
-    flex-wrap: wrap;
 
-    gap: 18px;
+    display:
+      flex;
+
+    flex-wrap:
+      wrap;
+
+    gap:
+      18px;
 
     color:
-      rgba(29, 29, 27, 0.7);
+      rgba(
+        29,
+        29,
+        27,
+        0.7
+      );
 
     font-size:
       0.96rem;
@@ -544,24 +879,38 @@ const apiUrl = "https://flighttracker-d6gcdgfycedvc9ek.westus3-01.azurewebsites.
 
   .nav-links a:hover,
   .brand:hover {
-    color: #171614;
+
+    color:
+      #171614;
   }
 
 
   .hero-grid {
+
     padding:
       10px 24px 28px;
   }
 
 
   .hero-copy {
+
     padding:
-      clamp(18px, 4vw, 24px)
-      0 4px;
+      clamp(
+        18px,
+        4vw,
+        24px
+      )
+      0
+      4px;
   }
 
 
+  /* --------------------------------------------------
+     TYPOGRAPHY
+  -------------------------------------------------- */
+
   .eyebrow {
+
     margin:
       0 0 12px;
 
@@ -585,6 +934,7 @@ const apiUrl = "https://flighttracker-d6gcdgfycedvc9ek.westus3-01.azurewebsites.
   h1,
   h2,
   h3 {
+
     margin: 0;
 
     font-family:
@@ -603,7 +953,9 @@ const apiUrl = "https://flighttracker-d6gcdgfycedvc9ek.westus3-01.azurewebsites.
 
 
   h1 {
-    max-width: 12ch;
+
+    max-width:
+      12ch;
 
     font-size:
       clamp(
@@ -615,18 +967,859 @@ const apiUrl = "https://flighttracker-d6gcdgfycedvc9ek.westus3-01.azurewebsites.
 
 
   h2 {
+
+    max-width:
+      13ch;
+
     font-size:
       clamp(
         2rem,
         3.6vw,
         3rem
       );
-
-    max-width:
-      13ch;
   }
 
 
   h3 {
+
     font-size:
-      1.54rem
+      1.54rem;
+  }
+
+
+  .lede,
+  .about-project p {
+
+    color:
+      rgba(
+        29,
+        29,
+        27,
+        0.8
+      );
+
+    line-height:
+      1.7;
+
+    font-size:
+      1.02rem;
+  }
+
+
+  .lede {
+
+    max-width:
+      60ch;
+
+    margin:
+      20px 0 0;
+
+    font-size:
+      1.12rem;
+  }
+
+
+  /* --------------------------------------------------
+     STATUS
+  -------------------------------------------------- */
+
+  .tracker-status {
+
+    display:
+      flex;
+
+    flex-wrap:
+      wrap;
+
+    align-items:
+      center;
+
+    gap:
+      10px;
+
+    margin-top:
+      26px;
+
+    color:
+      rgba(
+        29,
+        29,
+        27,
+        0.62
+      );
+
+    font-size:
+      0.86rem;
+  }
+
+
+  .live-indicator {
+
+    width:
+      8px;
+
+    height:
+      8px;
+
+    border-radius:
+      999px;
+
+    background:
+      #638758;
+
+    box-shadow:
+      0 0 0 4px
+      rgba(
+        99,
+        135,
+        88,
+        0.12
+      );
+  }
+
+
+  .live-indicator.loading {
+
+    background:
+      #b49262;
+  }
+
+
+  .live-indicator.error {
+
+    background:
+      #a35f55;
+  }
+
+
+  .status-divider {
+
+    width:
+      3px;
+
+    height:
+      3px;
+
+    border-radius:
+      999px;
+
+    background:
+      rgba(
+        29,
+        29,
+        27,
+        0.3
+      );
+  }
+
+
+  /* --------------------------------------------------
+     CONTENT CARD
+  -------------------------------------------------- */
+
+  .content-section {
+
+    margin-top:
+      22px;
+
+    padding:
+      clamp(
+        22px,
+        3vw,
+        32px
+      );
+
+    border-radius:
+      24px;
+
+    background:
+      rgba(
+        255,
+        255,
+        255,
+        0.72
+      );
+
+    border:
+      1px solid
+      rgba(
+        30,
+        24,
+        18,
+        0.08
+      );
+
+    box-shadow:
+      0 10px 24px
+      rgba(
+        20,
+        19,
+        15,
+        0.03
+      );
+  }
+
+
+  .tracker-heading {
+
+    display:
+      flex;
+
+    align-items:
+      flex-end;
+
+    justify-content:
+      space-between;
+
+    gap:
+      24px;
+
+    margin-bottom:
+      20px;
+  }
+
+
+  /* --------------------------------------------------
+     REFRESH BUTTON
+  -------------------------------------------------- */
+
+  #refresh-button {
+
+    min-height:
+      42px;
+
+    padding:
+      0 17px;
+
+    border-radius:
+      999px;
+
+    border:
+      1px solid
+      rgba(
+        23,
+        22,
+        20,
+        0.12
+      );
+
+    background:
+      #1a1a18;
+
+    color:
+      #f6f0e8;
+
+    font:
+      inherit;
+
+    font-weight:
+      700;
+
+    cursor:
+      pointer;
+
+    transition:
+      transform 0.2s ease,
+      opacity 0.2s ease;
+  }
+
+
+  #refresh-button:hover {
+
+    transform:
+      translateY(-1px);
+  }
+
+
+  #refresh-button:disabled {
+
+    opacity:
+      0.5;
+
+    cursor:
+      wait;
+
+    transform:
+      none;
+  }
+
+
+  /* --------------------------------------------------
+     MAP
+
+     IMPORTANT:
+     Leaflet requires an explicit height.
+  -------------------------------------------------- */
+
+  #map {
+
+    display:
+      block;
+
+    position:
+      relative;
+
+    width:
+      100%;
+
+    height:
+      600px !important;
+
+    min-height:
+      600px;
+
+    border-radius:
+      20px;
+
+    overflow:
+      hidden;
+
+    border:
+      1px solid
+      rgba(
+        31,
+        24,
+        17,
+        0.1
+      );
+
+    background:
+      #e9e4dc;
+
+    z-index:
+      1;
+  }
+
+
+  /* --------------------------------------------------
+     LEAFLET
+  -------------------------------------------------- */
+
+  .leaflet-container {
+
+    font-family:
+      'Red Hat Display',
+      sans-serif;
+  }
+
+
+  .leaflet-control-attribution {
+
+    font-size:
+      10px;
+  }
+
+
+  /* --------------------------------------------------
+     AIRCRAFT MARKERS
+  -------------------------------------------------- */
+
+  .aircraft-marker-container {
+
+    background:
+      transparent !important;
+
+    border:
+      none !important;
+  }
+
+
+  .aircraft-marker {
+
+    display:
+      flex;
+
+    align-items:
+      center;
+
+    justify-content:
+      center;
+
+    width:
+      34px;
+
+    height:
+      34px;
+
+    border-radius:
+      999px;
+
+    background:
+      #1a1a18;
+
+    color:
+      #f6f0e8;
+
+    border:
+      2px solid
+      rgba(
+        255,
+        255,
+        255,
+        0.92
+      );
+
+    box-shadow:
+      0 4px 12px
+      rgba(
+        0,
+        0,
+        0,
+        0.18
+      );
+
+    font-size:
+      16px;
+
+    cursor:
+      pointer;
+
+    transition:
+      transform 0.15s ease,
+      background 0.15s ease;
+  }
+
+
+  .aircraft-marker:hover {
+
+    transform:
+      scale(1.14);
+
+    background:
+      #7f5f3a;
+  }
+
+
+  .aircraft-marker.unresolved {
+
+    background:
+      #80776d;
+
+    opacity:
+      0.82;
+  }
+
+
+  /* --------------------------------------------------
+     FLIGHT DETAIL
+  -------------------------------------------------- */
+
+  .flight-detail {
+
+    display:
+      grid;
+
+    grid-template-columns:
+      1fr auto;
+
+    gap:
+      24px;
+
+    margin-top:
+      18px;
+
+    padding:
+      20px;
+
+    border-radius:
+      20px;
+
+    background:
+      #f6f1ea;
+
+    border:
+      1px solid
+      rgba(
+        31,
+        24,
+        17,
+        0.08
+      );
+  }
+
+
+  .flight-detail.hidden {
+
+    display:
+      none;
+  }
+
+
+  .project-kicker {
+
+    margin:
+      0;
+
+    font-size:
+      0.72rem;
+
+    letter-spacing:
+      0.14em;
+
+    text-transform:
+      uppercase;
+
+    color:
+      rgba(
+        29,
+        29,
+        27,
+        0.58
+      );
+
+    font-weight:
+      700;
+  }
+
+
+  .flight-detail h3 {
+
+    margin-top:
+      10px;
+  }
+
+
+  .airline {
+
+    margin:
+      6px 0 0;
+
+    color:
+      rgba(
+        29,
+        29,
+        27,
+        0.65
+      );
+  }
+
+
+  .route {
+
+    display:
+      flex;
+
+    align-items:
+      center;
+
+    gap:
+      12px;
+
+    font-size:
+      1.15rem;
+
+    font-weight:
+      700;
+  }
+
+
+  .route-line {
+
+    color:
+      #7f5f3a;
+  }
+
+
+  .aircraft-meta {
+
+    grid-column:
+      1 / -1;
+
+    display:
+      flex;
+
+    flex-wrap:
+      wrap;
+
+    gap:
+      28px;
+
+    margin:
+      0;
+
+    padding-top:
+      16px;
+
+    border-top:
+      1px solid
+      rgba(
+        23,
+        22,
+        20,
+        0.1
+      );
+  }
+
+
+  .aircraft-meta dt {
+
+    margin-bottom:
+      4px;
+
+    font-size:
+      0.68rem;
+
+    text-transform:
+      uppercase;
+
+    letter-spacing:
+      0.12em;
+
+    color:
+      rgba(
+        29,
+        29,
+        27,
+        0.5
+      );
+
+    font-weight:
+      700;
+  }
+
+
+  .aircraft-meta dd {
+
+    margin:
+      0;
+
+    font-variant-numeric:
+      tabular-nums;
+  }
+
+
+  /* --------------------------------------------------
+     ABOUT
+  -------------------------------------------------- */
+
+  .split-section {
+
+    display:
+      grid;
+
+    grid-template-columns:
+      minmax(0, 0.9fr)
+      minmax(0, 1.1fr);
+
+    gap:
+      28px;
+
+    align-items:
+      start;
+  }
+
+
+  .section-heading {
+
+    display:
+      grid;
+
+    gap:
+      10px;
+  }
+
+
+  .about-project {
+
+    border-radius:
+      20px;
+
+    background:
+      #f6f1ea;
+
+    border:
+      1px solid
+      rgba(
+        31,
+        24,
+        17,
+        0.08
+      );
+
+    padding:
+      22px;
+  }
+
+
+  .about-project p:first-child {
+
+    margin-top:
+      0;
+  }
+
+
+  .tech-list {
+
+    display:
+      flex;
+
+    flex-wrap:
+      wrap;
+
+    gap:
+      8px;
+
+    padding:
+      0;
+
+    margin:
+      20px 0 0;
+
+    list-style:
+      none;
+  }
+
+
+  .tech-list li {
+
+    display:
+      inline-flex;
+
+    align-items:
+      center;
+
+    min-height:
+      30px;
+
+    padding:
+      0 12px;
+
+    border-radius:
+      999px;
+
+    background:
+      rgba(
+        26,
+        26,
+        24,
+        0.04
+      );
+
+    color:
+      rgba(
+        29,
+        29,
+        27,
+        0.82
+      );
+
+    border:
+      1px solid
+      rgba(
+        26,
+        26,
+        24,
+        0.06
+      );
+
+    font-size:
+      0.82rem;
+  }
+
+
+  /* --------------------------------------------------
+     RESPONSIVE
+  -------------------------------------------------- */
+
+  @media (max-width: 920px) {
+
+    .split-section {
+
+      grid-template-columns:
+        1fr;
+    }
+
+
+    .topbar {
+
+      align-items:
+        flex-start;
+
+      flex-direction:
+        column;
+    }
+
+  }
+
+
+  @media (max-width: 640px) {
+
+    .page-shell {
+
+      width:
+        min(
+          100% - 20px,
+          1120px
+        );
+
+      padding-bottom:
+        36px;
+    }
+
+
+    .hero-grid,
+    .topbar,
+    .content-section {
+
+      padding-left:
+        18px;
+
+      padding-right:
+        18px;
+    }
+
+
+    .topbar {
+
+      padding-top:
+        16px;
+    }
+
+
+    h1 {
+
+      font-size:
+        clamp(
+          2.8rem,
+          16vw,
+          4.2rem
+        );
+    }
+
+
+    .tracker-heading {
+
+      align-items:
+        flex-start;
+
+      flex-direction:
+        column;
+    }
+
+
+    #map {
+
+      height:
+        480px !important;
+
+      min-height:
+        480px;
+    }
+
+
+    .flight-detail {
+
+      grid-template-columns:
+        1fr;
+    }
+
+
+    .route {
+
+      justify-content:
+        flex-start;
+    }
+
+  }
+
+</style>
