@@ -44,9 +44,7 @@ if (!apiUrl?.startsWith('https://')) {
   <body>
     <div class="page-shell">
 
-      <!-- HERO -->
       <header class="hero">
-
         <nav class="topbar" aria-label="Primary">
           <a class="brand" href="/">{name}</a>
 
@@ -59,7 +57,6 @@ if (!apiUrl?.startsWith('https://')) {
 
         <div class="hero-grid">
           <div class="hero-copy">
-
             <p class="eyebrow">
               Live project / Data engineering
             </p>
@@ -73,7 +70,6 @@ if (!apiUrl?.startsWith('https://')) {
             </p>
 
             <div class="tracker-status">
-
               <span
                 id="live-indicator"
                 class="live-indicator loading"
@@ -94,28 +90,27 @@ if (!apiUrl?.startsWith('https://')) {
               <span id="last-updated">
                 Waiting for first update
               </span>
-
             </div>
           </div>
         </div>
-
       </header>
 
 
       <main>
 
-        <!-- TRACKER -->
         <section
           class="content-section tracker-section"
           id="tracker"
         >
-
           <div class="tracker-heading">
-
             <div>
-              <p class="eyebrow">Live tracker</p>
+              <p class="eyebrow">
+                Live tracker
+              </p>
 
-              <h2>Aircraft nearby.</h2>
+              <h2>
+                Aircraft nearby.
+              </h2>
             </div>
 
             <button
@@ -124,11 +119,13 @@ if (!apiUrl?.startsWith('https://')) {
             >
               Refresh
             </button>
-
           </div>
 
 
-          <!-- MAP -->
+          <!--
+            Inline height is deliberate.
+            Leaflet requires a map container with explicit height.
+          -->
           <div
             id="map"
             role="application"
@@ -137,14 +134,11 @@ if (!apiUrl?.startsWith('https://')) {
           ></div>
 
 
-          <!-- SELECTED AIRCRAFT -->
           <div
             id="flight-detail"
             class="flight-detail hidden"
           >
-
             <div class="aircraft-title">
-
               <p class="project-kicker">
                 Selected aircraft
               </p>
@@ -159,12 +153,9 @@ if (!apiUrl?.startsWith('https://')) {
               >
                 —
               </p>
-
             </div>
 
-
             <div class="route">
-
               <span id="detail-origin">
                 —
               </span>
@@ -176,12 +167,9 @@ if (!apiUrl?.startsWith('https://')) {
               <span id="detail-destination">
                 —
               </span>
-
             </div>
 
-
             <dl class="aircraft-meta">
-
               <div>
                 <dt>ICAO24</dt>
                 <dd id="detail-icao">—</dd>
@@ -191,22 +179,16 @@ if (!apiUrl?.startsWith('https://')) {
                 <dt>Position</dt>
                 <dd id="detail-position">—</dd>
               </div>
-
             </dl>
-
           </div>
-
         </section>
 
 
-        <!-- ABOUT -->
         <section
           class="content-section split-section"
           id="about"
         >
-
           <div class="section-heading">
-
             <p class="eyebrow">
               Behind the project
             </p>
@@ -214,23 +196,20 @@ if (!apiUrl?.startsWith('https://')) {
             <h2>
               From aircraft signal to web map.
             </h2>
-
           </div>
 
-
           <div class="about-project">
-
             <p>
-              Aircraft position data is collected, processed
-              and enriched with route information before being
-              stored in Databricks.
+              Aircraft position data is collected, processed and
+              enriched with route information before being stored
+              in Databricks.
             </p>
 
             <p>
-              A lightweight Flask API running on Azure App
-              Service exposes the current aircraft data to this
-              page, with caching used to reduce unnecessary
-              queries against the data platform.
+              A lightweight Flask API running on Azure App Service
+              exposes the current aircraft data to this page, with
+              caching used to reduce unnecessary queries against
+              the data platform.
             </p>
 
             <ul class="tech-list">
@@ -241,18 +220,16 @@ if (!apiUrl?.startsWith('https://')) {
               <li>Astro</li>
               <li>Leaflet</li>
             </ul>
-
           </div>
-
         </section>
 
       </main>
-
     </div>
 
 
-    <!-- Leaflet JS must load before our code -->
-      <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    ></script>
 
 
     <script
@@ -261,9 +238,50 @@ if (!apiUrl?.startsWith('https://')) {
     >
       let map
 
+      // Aircraft marker state.
       const markers = new Map()
 
+      // ICAO24 of the currently selected aircraft.
+      // null means nothing is currently selected.
+      let selectedAircraftId = null
+
       const POLL_INTERVAL_MS = 30000
+
+
+      // Approximate airport reference locations.
+      const airports = [
+        {
+          code: 'LHR',
+          name: 'London Heathrow',
+          lat: 51.4700,
+          lon: -0.4543
+        },
+        {
+          code: 'LGW',
+          name: 'London Gatwick',
+          lat: 51.1537,
+          lon: -0.1821
+        },
+        {
+          code: 'STN',
+          name: 'London Stansted',
+          lat: 51.8893,
+          lon: 0.2627
+        },
+        {
+          code: 'LTN',
+          name: 'London Luton',
+          lat: 51.8740,
+          lon: -0.3688
+        },
+        {
+          code: 'LCY',
+          name: 'London City',
+          lat: 51.5053,
+          lon: 0.0553
+        }
+      ]
+
 
       const countElement =
         document.getElementById('aircraft-count')
@@ -280,13 +298,53 @@ if (!apiUrl?.startsWith('https://')) {
       const liveIndicator =
         document.getElementById('live-indicator')
 
+      const flightDetail =
+        document.getElementById('flight-detail')
+
+
+      // --------------------------------------------------
+      // HELPERS
+      // --------------------------------------------------
+
+      function flightHasResolvedData(flight) {
+        return Boolean(
+          flight.airline ||
+          flight.origin ||
+          flight.destination
+        )
+      }
+
+
+      function clearSelection() {
+        if (selectedAircraftId) {
+          const previousMarker =
+            markers.get(selectedAircraftId)
+
+          if (previousMarker?.flight) {
+            previousMarker.setIcon(
+              createAircraftIcon(
+                flightHasResolvedData(
+                  previousMarker.flight
+                ),
+                false
+              )
+            )
+
+            previousMarker.setZIndexOffset(0)
+          }
+        }
+
+        selectedAircraftId = null
+
+        flightDetail.classList.add('hidden')
+      }
+
 
       // --------------------------------------------------
       // MAP
       // --------------------------------------------------
 
       function initialiseMap() {
-
         map = L.map(
           'map',
           {
@@ -308,11 +366,79 @@ if (!apiUrl?.startsWith('https://')) {
         ).addTo(map)
 
 
-        // Ensures Leaflet recalculates against
-        // the final rendered container dimensions.
+        addAirportMarkers()
+
+
         setTimeout(
-          () => map.invalidateSize(),
+          () => {
+            map.invalidateSize()
+          },
           100
+        )
+      }
+
+
+      // --------------------------------------------------
+      // AIRPORTS
+      // --------------------------------------------------
+
+      function createAirportIcon(code) {
+        return L.divIcon({
+          className:
+            'airport-marker-container',
+
+          html: `
+            <div class="airport-marker">
+              <span class="airport-dot"></span>
+              <span class="airport-code">${code}</span>
+            </div>
+          `,
+
+          iconSize:
+            [54, 28],
+
+          iconAnchor:
+            [27, 14]
+        })
+      }
+
+
+      function addAirportMarkers() {
+        airports.forEach(
+          (airport) => {
+            const marker =
+              L.marker(
+                [
+                  airport.lat,
+                  airport.lon
+                ],
+                {
+                  icon:
+                    createAirportIcon(
+                      airport.code
+                    ),
+
+                  keyboard: true,
+
+                  // Keep airports below aircraft markers.
+                  zIndexOffset: -500
+                }
+              )
+
+
+            marker.bindTooltip(
+              `<strong>${airport.code}</strong><br>${airport.name}`,
+              {
+                direction: 'top',
+                offset: [0, -10],
+                className:
+                  'airport-tooltip'
+              }
+            )
+
+
+            marker.addTo(map)
+          }
         )
       }
 
@@ -321,41 +447,104 @@ if (!apiUrl?.startsWith('https://')) {
       // AIRCRAFT ICON
       // --------------------------------------------------
 
-      function createAircraftIcon(resolved) {
+      function createAircraftIcon(
+        resolved,
+        selected = false
+      ) {
+        const classes = [
+          resolved
+            ? ''
+            : 'unresolved',
+
+          selected
+            ? 'selected'
+            : ''
+        ]
+          .filter(Boolean)
+          .join(' ')
+
 
         return L.divIcon({
           className:
             'aircraft-marker-container',
 
           html: `
-            <div class="aircraft-marker ${
-              resolved ? '' : 'unresolved'
-            }">
+            <div class="aircraft-marker ${classes}">
               <span>✈</span>
             </div>
           `,
 
           iconSize:
-            [36, 36],
+            selected
+              ? [44, 44]
+              : [36, 36],
 
           iconAnchor:
-            [18, 18]
+            selected
+              ? [22, 22]
+              : [18, 18]
         })
       }
 
 
       // --------------------------------------------------
-      // AIRCRAFT DETAILS
+      // SELECTION
       // --------------------------------------------------
 
       function selectFlight(flight) {
 
-        const panel =
-          document.getElementById(
-            'flight-detail'
+        // Restore previous selection first.
+        if (
+          selectedAircraftId &&
+          selectedAircraftId !== flight.icao24
+        ) {
+          const previousMarker =
+            markers.get(
+              selectedAircraftId
+            )
+
+          if (previousMarker?.flight) {
+            previousMarker.setIcon(
+              createAircraftIcon(
+                flightHasResolvedData(
+                  previousMarker.flight
+                ),
+                false
+              )
+            )
+
+            previousMarker.setZIndexOffset(
+              0
+            )
+          }
+        }
+
+
+        selectedAircraftId =
+          flight.icao24
+
+
+        const selectedMarker =
+          markers.get(
+            selectedAircraftId
           )
 
-        panel.classList.remove(
+
+        if (selectedMarker) {
+          selectedMarker.setIcon(
+            createAircraftIcon(
+              flightHasResolvedData(flight),
+              true
+            )
+          )
+
+          selectedMarker.setZIndexOffset(
+            1000
+          )
+        }
+
+
+        flightDetail.classList.remove(
           'hidden'
         )
 
@@ -395,32 +584,38 @@ if (!apiUrl?.startsWith('https://')) {
           '—'
 
 
-        if (
+        document.getElementById(
+          'detail-position'
+        ).textContent =
           typeof flight.lat === 'number' &&
           typeof flight.lon === 'number'
-        ) {
-
-          document.getElementById(
-            'detail-position'
-          ).textContent =
-            `${flight.lat.toFixed(4)}, ${flight.lon.toFixed(4)}`
-
-        } else {
-
-          document.getElementById(
-            'detail-position'
-          ).textContent =
-            'Unavailable'
-
-        }
+            ? `${flight.lat.toFixed(4)}, ${flight.lon.toFixed(4)}`
+            : 'Unavailable'
       }
 
 
       // --------------------------------------------------
-      // MARKER UPDATE
+      // AIRCRAFT SNAPSHOT UPDATE
       // --------------------------------------------------
 
       function updateMarkers(flights) {
+
+        /*
+          Every successful API response is considered the
+          authoritative current snapshot.
+
+          Existing aircraft:
+            -> position/data updated
+
+          New aircraft:
+            -> marker created
+
+          Missing aircraft:
+            -> marker removed
+
+          Selected aircraft missing:
+            -> selection cleared gracefully
+        */
 
         const currentAircraft =
           new Set()
@@ -431,7 +626,8 @@ if (!apiUrl?.startsWith('https://')) {
 
             if (
               typeof flight.lat !== 'number' ||
-              typeof flight.lon !== 'number'
+              typeof flight.lon !== 'number' ||
+              !flight.icao24
             ) {
               return
             }
@@ -441,22 +637,20 @@ if (!apiUrl?.startsWith('https://')) {
               flight.icao24
 
 
-            if (!identifier) {
-              return
-            }
-
-
             currentAircraft.add(
               identifier
             )
 
 
             const resolved =
-              Boolean(
-                flight.airline ||
-                flight.origin ||
-                flight.destination
+              flightHasResolvedData(
+                flight
               )
+
+
+            const selected =
+              identifier ===
+              selectedAircraftId
 
 
             const existing =
@@ -465,9 +659,9 @@ if (!apiUrl?.startsWith('https://')) {
               )
 
 
-            // ------------------------------
-            // MOVE EXISTING AIRCRAFT
-            // ------------------------------
+            // --------------------------------------------
+            // EXISTING AIRCRAFT
+            // --------------------------------------------
 
             if (existing) {
 
@@ -476,16 +670,46 @@ if (!apiUrl?.startsWith('https://')) {
                 flight.lon
               ])
 
+
+              // Keep the latest API state bound
+              // to the marker.
               existing.flight =
                 flight
+
+
+              // Re-render icon so selected state
+              // survives legitimate position updates.
+              existing.setIcon(
+                createAircraftIcon(
+                  resolved,
+                  selected
+                )
+              )
+
+
+              existing.setZIndexOffset(
+                selected
+                  ? 1000
+                  : 0
+              )
+
+
+              // If selected, update its detail panel
+              // with the latest position/enrichment too.
+              if (selected) {
+                updateSelectedFlightDetails(
+                  flight
+                )
+              }
+
 
               return
             }
 
 
-            // ------------------------------
+            // --------------------------------------------
             // NEW AIRCRAFT
-            // ------------------------------
+            // --------------------------------------------
 
             const marker =
               L.marker(
@@ -496,8 +720,14 @@ if (!apiUrl?.startsWith('https://')) {
                 {
                   icon:
                     createAircraftIcon(
-                      resolved
-                    )
+                      resolved,
+                      selected
+                    ),
+
+                  zIndexOffset:
+                    selected
+                      ? 1000
+                      : 0
                 }
               )
 
@@ -516,9 +746,7 @@ if (!apiUrl?.startsWith('https://')) {
             )
 
 
-            marker.addTo(
-              map
-            )
+            marker.addTo(map)
 
 
             markers.set(
@@ -529,9 +757,9 @@ if (!apiUrl?.startsWith('https://')) {
         )
 
 
-        // ------------------------------
-        // REMOVE AIRCRAFT NO LONGER SEEN
-        // ------------------------------
+        // ----------------------------------------------
+        // REMOVE AIRCRAFT ABSENT FROM CURRENT SNAPSHOT
+        // ----------------------------------------------
 
         for (
           const [icao, marker]
@@ -539,18 +767,83 @@ if (!apiUrl?.startsWith('https://')) {
         ) {
 
           if (
-            !currentAircraft.has(
+            currentAircraft.has(
               icao
             )
           ) {
+            continue
+          }
 
-            marker.remove()
 
-            markers.delete(
-              icao
+          marker.remove()
+
+          markers.delete(
+            icao
+          )
+
+
+          // Selected aircraft has left the tracking
+          // area / disappeared from the latest feed.
+          if (
+            selectedAircraftId ===
+            icao
+          ) {
+            selectedAircraftId =
+              null
+
+            flightDetail.classList.add(
+              'hidden'
             )
           }
         }
+      }
+
+
+      function updateSelectedFlightDetails(
+        flight
+      ) {
+        document.getElementById(
+          'detail-flight'
+        ).textContent =
+          flight.flight_id ||
+          'Unknown aircraft'
+
+
+        document.getElementById(
+          'detail-airline'
+        ).textContent =
+          flight.airline ||
+          'Airline unavailable'
+
+
+        document.getElementById(
+          'detail-origin'
+        ).textContent =
+          flight.origin ||
+          '—'
+
+
+        document.getElementById(
+          'detail-destination'
+        ).textContent =
+          flight.destination ||
+          '—'
+
+
+        document.getElementById(
+          'detail-icao'
+        ).textContent =
+          flight.icao24 ||
+          '—'
+
+
+        document.getElementById(
+          'detail-position'
+        ).textContent =
+          typeof flight.lat === 'number' &&
+          typeof flight.lon === 'number'
+            ? `${flight.lat.toFixed(4)}, ${flight.lon.toFixed(4)}`
+            : 'Unavailable'
       }
 
 
@@ -567,6 +860,10 @@ if (!apiUrl?.startsWith('https://')) {
           'loading'
         )
 
+        liveIndicator.classList.remove(
+          'error'
+        )
+
         refreshButton.disabled =
           true
 
@@ -578,16 +875,19 @@ if (!apiUrl?.startsWith('https://')) {
               apiUrl,
               {
                 method: 'GET',
+
                 headers: {
                   Accept:
                     'application/json'
-                }
+                },
+
+                cache:
+                  'no-store'
               }
             )
 
 
           if (!response.ok) {
-
             throw new Error(
               `API returned ${response.status}`
             )
@@ -603,12 +903,22 @@ if (!apiUrl?.startsWith('https://')) {
               data.flights
             )
           ) {
-
             throw new Error(
               'Invalid API response'
             )
           }
 
+
+          /*
+            IMPORTANT:
+
+            Only successful, valid responses update
+            marker state.
+
+            If Azure / Databricks temporarily fails,
+            the previous map remains visible instead
+            of incorrectly deleting every aircraft.
+          */
 
           updateMarkers(
             data.flights
@@ -616,11 +926,7 @@ if (!apiUrl?.startsWith('https://')) {
 
 
           countElement.textContent =
-            `${data.flights.length} ${
-              data.flights.length === 1
-                ? 'aircraft'
-                : 'aircraft'
-            }`
+            `${data.flights.length} aircraft`
 
 
           statusElement.textContent =
@@ -656,8 +962,21 @@ if (!apiUrl?.startsWith('https://')) {
           )
 
 
+          /*
+            Do NOT clear markers here.
+
+            A failed poll does not mean the aircraft
+            have disappeared. It means we don't have
+            a trustworthy new snapshot.
+          */
+
           statusElement.textContent =
             'Data temporarily unavailable'
+
+
+          liveIndicator.classList.remove(
+            'loading'
+          )
 
 
           liveIndicator.classList.add(
@@ -669,7 +988,6 @@ if (!apiUrl?.startsWith('https://')) {
 
           refreshButton.disabled =
             false
-
         }
       }
 
@@ -684,12 +1002,15 @@ if (!apiUrl?.startsWith('https://')) {
 
           initialiseMap()
 
+
           refreshButton.addEventListener(
             'click',
             loadFlights
           )
 
+
           loadFlights()
+
 
           window.setInterval(
             loadFlights,
@@ -712,7 +1033,6 @@ if (!apiUrl?.startsWith('https://')) {
 
   body {
     margin: 0;
-
     min-height: 100vh;
 
     font-family:
@@ -739,19 +1059,14 @@ if (!apiUrl?.startsWith('https://')) {
 
   a {
     color: inherit;
-
     text-decoration: none;
   }
 
 
-  /* --------------------------------------------------
-     PAGE
-  -------------------------------------------------- */
+  /* PAGE */
 
   .page-shell {
-
     position: relative;
-
     z-index: 1;
 
     width:
@@ -768,14 +1083,10 @@ if (!apiUrl?.startsWith('https://')) {
   }
 
 
-  /* --------------------------------------------------
-     HERO
-  -------------------------------------------------- */
+  /* HERO */
 
   .hero {
-
-    position:
-      relative;
+    position: relative;
 
     border-radius:
       28px;
@@ -815,13 +1126,8 @@ if (!apiUrl?.startsWith('https://')) {
 
 
   .topbar {
-
-    display:
-      flex;
-
-    align-items:
-      center;
-
+    display: flex;
+    align-items: center;
     justify-content:
       space-between;
 
@@ -834,7 +1140,6 @@ if (!apiUrl?.startsWith('https://')) {
 
 
   .brand {
-
     font-size:
       0.8rem;
 
@@ -853,12 +1158,8 @@ if (!apiUrl?.startsWith('https://')) {
 
 
   .nav-links {
-
-    display:
-      flex;
-
-    flex-wrap:
-      wrap;
+    display: flex;
+    flex-wrap: wrap;
 
     gap:
       18px;
@@ -878,21 +1179,18 @@ if (!apiUrl?.startsWith('https://')) {
 
   .nav-links a:hover,
   .brand:hover {
-
     color:
       #171614;
   }
 
 
   .hero-grid {
-
     padding:
       10px 24px 28px;
   }
 
 
   .hero-copy {
-
     padding:
       clamp(
         18px,
@@ -904,12 +1202,9 @@ if (!apiUrl?.startsWith('https://')) {
   }
 
 
-  /* --------------------------------------------------
-     TYPOGRAPHY
-  -------------------------------------------------- */
+  /* TYPOGRAPHY */
 
   .eyebrow {
-
     margin:
       0 0 12px;
 
@@ -933,7 +1228,6 @@ if (!apiUrl?.startsWith('https://')) {
   h1,
   h2,
   h3 {
-
     margin: 0;
 
     font-family:
@@ -952,7 +1246,6 @@ if (!apiUrl?.startsWith('https://')) {
 
 
   h1 {
-
     max-width:
       12ch;
 
@@ -966,7 +1259,6 @@ if (!apiUrl?.startsWith('https://')) {
 
 
   h2 {
-
     max-width:
       13ch;
 
@@ -980,7 +1272,6 @@ if (!apiUrl?.startsWith('https://')) {
 
 
   h3 {
-
     font-size:
       1.54rem;
   }
@@ -988,7 +1279,6 @@ if (!apiUrl?.startsWith('https://')) {
 
   .lede,
   .about-project p {
-
     color:
       rgba(
         29,
@@ -1006,7 +1296,6 @@ if (!apiUrl?.startsWith('https://')) {
 
 
   .lede {
-
     max-width:
       60ch;
 
@@ -1018,12 +1307,9 @@ if (!apiUrl?.startsWith('https://')) {
   }
 
 
-  /* --------------------------------------------------
-     STATUS
-  -------------------------------------------------- */
+  /* STATUS */
 
   .tracker-status {
-
     display:
       flex;
 
@@ -1053,7 +1339,6 @@ if (!apiUrl?.startsWith('https://')) {
 
 
   .live-indicator {
-
     width:
       8px;
 
@@ -1078,21 +1363,27 @@ if (!apiUrl?.startsWith('https://')) {
 
 
   .live-indicator.loading {
-
     background:
       #b49262;
   }
 
 
   .live-indicator.error {
-
     background:
       #a35f55;
+
+    box-shadow:
+      0 0 0 4px
+      rgba(
+        163,
+        95,
+        85,
+        0.12
+      );
   }
 
 
   .status-divider {
-
     width:
       3px;
 
@@ -1112,12 +1403,9 @@ if (!apiUrl?.startsWith('https://')) {
   }
 
 
-  /* --------------------------------------------------
-     CONTENT CARD
-  -------------------------------------------------- */
+  /* CARD */
 
   .content-section {
-
     margin-top:
       22px;
 
@@ -1160,10 +1448,7 @@ if (!apiUrl?.startsWith('https://')) {
 
 
   .tracker-heading {
-
-    display:
-      flex;
-
+    display: flex;
     align-items:
       flex-end;
 
@@ -1178,12 +1463,9 @@ if (!apiUrl?.startsWith('https://')) {
   }
 
 
-  /* --------------------------------------------------
-     REFRESH BUTTON
-  -------------------------------------------------- */
+  /* REFRESH */
 
   #refresh-button {
-
     min-height:
       42px;
 
@@ -1224,14 +1506,12 @@ if (!apiUrl?.startsWith('https://')) {
 
 
   #refresh-button:hover {
-
     transform:
       translateY(-1px);
   }
 
 
   #refresh-button:disabled {
-
     opacity:
       0.5;
 
@@ -1243,29 +1523,19 @@ if (!apiUrl?.startsWith('https://')) {
   }
 
 
-  /* --------------------------------------------------
-     MAP
-
-     IMPORTANT:
-     Leaflet requires an explicit height.
-  -------------------------------------------------- */
+  /* MAP */
 
   #map {
+    display: block;
+    position: relative;
 
-    display:
-      block;
-
-    position:
-      relative;
-
-    width:
-      100%;
+    width: 100%;
 
     height:
       600px !important;
 
     min-height:
-      600px;
+      600px !important;
 
     border-radius:
       20px;
@@ -1290,12 +1560,7 @@ if (!apiUrl?.startsWith('https://')) {
   }
 
 
-  /* --------------------------------------------------
-     LEAFLET
-  -------------------------------------------------- */
-
   .leaflet-container {
-
     font-family:
       'Red Hat Display',
       sans-serif;
@@ -1303,18 +1568,153 @@ if (!apiUrl?.startsWith('https://')) {
 
 
   .leaflet-control-attribution {
-
     font-size:
       10px;
   }
 
 
-  /* --------------------------------------------------
-     AIRCRAFT MARKERS
-  -------------------------------------------------- */
+  /* AIRPORT MARKERS */
+
+  .airport-marker-container {
+    background:
+      transparent !important;
+
+    border:
+      0 !important;
+  }
+
+
+  .airport-marker {
+    display:
+      inline-flex;
+
+    align-items:
+      center;
+
+    gap:
+      6px;
+
+    height:
+      26px;
+
+    padding:
+      0 9px;
+
+    border:
+      1px solid
+      rgba(
+        23,
+        22,
+        20,
+        0.18
+      );
+
+    border-radius:
+      999px;
+
+    background:
+      rgba(
+        246,
+        241,
+        234,
+        0.95
+      );
+
+    color:
+      #292722;
+
+    box-shadow:
+      0 3px 10px
+      rgba(
+        20,
+        19,
+        15,
+        0.12
+      );
+
+    white-space:
+      nowrap;
+
+    font-size:
+      0.68rem;
+
+    font-weight:
+      700;
+
+    letter-spacing:
+      0.08em;
+  }
+
+
+  .airport-dot {
+    width:
+      6px;
+
+    height:
+      6px;
+
+    flex:
+      0 0 6px;
+
+    border-radius:
+      999px;
+
+    background:
+      #7f5f3a;
+  }
+
+
+  .airport-code {
+    line-height:
+      1;
+  }
+
+
+  .airport-tooltip {
+    padding:
+      7px 9px !important;
+
+    border:
+      1px solid
+      rgba(
+        23,
+        22,
+        20,
+        0.12
+      ) !important;
+
+    border-radius:
+      10px !important;
+
+    background:
+      rgba(
+        255,
+        255,
+        255,
+        0.96
+      ) !important;
+
+    color:
+      #1d1d1b !important;
+
+    box-shadow:
+      0 5px 16px
+      rgba(
+        20,
+        19,
+        15,
+        0.12
+      ) !important;
+
+    font-family:
+      'Red Hat Display',
+      sans-serif;
+  }
+
+
+  /* AIRCRAFT */
 
   .aircraft-marker-container {
-
     background:
       transparent !important;
 
@@ -1324,7 +1724,6 @@ if (!apiUrl?.startsWith('https://')) {
 
 
   .aircraft-marker {
-
     display:
       flex;
 
@@ -1375,14 +1774,14 @@ if (!apiUrl?.startsWith('https://')) {
 
     transition:
       transform 0.15s ease,
-      background 0.15s ease;
+      background 0.15s ease,
+      box-shadow 0.15s ease;
   }
 
 
   .aircraft-marker:hover {
-
     transform:
-      scale(1.14);
+      scale(1.12);
 
     background:
       #7f5f3a;
@@ -1390,7 +1789,6 @@ if (!apiUrl?.startsWith('https://')) {
 
 
   .aircraft-marker.unresolved {
-
     background:
       #80776d;
 
@@ -1399,12 +1797,55 @@ if (!apiUrl?.startsWith('https://')) {
   }
 
 
-  /* --------------------------------------------------
-     FLIGHT DETAIL
-  -------------------------------------------------- */
+  .aircraft-marker.selected {
+    width:
+      42px;
+
+    height:
+      42px;
+
+    background:
+      #7f5f3a;
+
+    color:
+      #fffaf3;
+
+    border-width:
+      3px;
+
+    opacity:
+      1;
+
+    box-shadow:
+      0 0 0 5px
+      rgba(
+        127,
+        95,
+        58,
+        0.2
+      ),
+      0 8px 20px
+      rgba(
+        20,
+        19,
+        15,
+        0.24
+      );
+
+    transform:
+      scale(1.06);
+  }
+
+
+  .aircraft-marker.selected:hover {
+    transform:
+      scale(1.12);
+  }
+
+
+  /* FLIGHT DETAIL */
 
   .flight-detail {
-
     display:
       grid;
 
@@ -1438,16 +1879,13 @@ if (!apiUrl?.startsWith('https://')) {
 
 
   .flight-detail.hidden {
-
     display:
       none;
   }
 
 
   .project-kicker {
-
-    margin:
-      0;
+    margin: 0;
 
     font-size:
       0.72rem;
@@ -1472,14 +1910,12 @@ if (!apiUrl?.startsWith('https://')) {
 
 
   .flight-detail h3 {
-
     margin-top:
       10px;
   }
 
 
   .airline {
-
     margin:
       6px 0 0;
 
@@ -1494,7 +1930,6 @@ if (!apiUrl?.startsWith('https://')) {
 
 
   .route {
-
     display:
       flex;
 
@@ -1513,14 +1948,12 @@ if (!apiUrl?.startsWith('https://')) {
 
 
   .route-line {
-
     color:
       #7f5f3a;
   }
 
 
   .aircraft-meta {
-
     grid-column:
       1 / -1;
 
@@ -1551,7 +1984,6 @@ if (!apiUrl?.startsWith('https://')) {
 
 
   .aircraft-meta dt {
-
     margin-bottom:
       4px;
 
@@ -1578,21 +2010,16 @@ if (!apiUrl?.startsWith('https://')) {
 
 
   .aircraft-meta dd {
-
-    margin:
-      0;
+    margin: 0;
 
     font-variant-numeric:
       tabular-nums;
   }
 
 
-  /* --------------------------------------------------
-     ABOUT
-  -------------------------------------------------- */
+  /* ABOUT */
 
   .split-section {
-
     display:
       grid;
 
@@ -1609,7 +2036,6 @@ if (!apiUrl?.startsWith('https://')) {
 
 
   .section-heading {
-
     display:
       grid;
 
@@ -1619,7 +2045,6 @@ if (!apiUrl?.startsWith('https://')) {
 
 
   .about-project {
-
     border-radius:
       20px;
 
@@ -1641,14 +2066,11 @@ if (!apiUrl?.startsWith('https://')) {
 
 
   .about-project p:first-child {
-
-    margin-top:
-      0;
+    margin-top: 0;
   }
 
 
   .tech-list {
-
     display:
       flex;
 
@@ -1670,7 +2092,6 @@ if (!apiUrl?.startsWith('https://')) {
 
 
   .tech-list li {
-
     display:
       inline-flex;
 
@@ -1716,35 +2137,29 @@ if (!apiUrl?.startsWith('https://')) {
   }
 
 
-  /* --------------------------------------------------
-     RESPONSIVE
-  -------------------------------------------------- */
+  /* RESPONSIVE */
 
   @media (max-width: 920px) {
 
     .split-section {
-
       grid-template-columns:
         1fr;
     }
 
 
     .topbar {
-
       align-items:
         flex-start;
 
       flex-direction:
         column;
     }
-
   }
 
 
   @media (max-width: 640px) {
 
     .page-shell {
-
       width:
         min(
           100% - 20px,
@@ -1759,7 +2174,6 @@ if (!apiUrl?.startsWith('https://')) {
     .hero-grid,
     .topbar,
     .content-section {
-
       padding-left:
         18px;
 
@@ -1769,14 +2183,12 @@ if (!apiUrl?.startsWith('https://')) {
 
 
     .topbar {
-
       padding-top:
         16px;
     }
 
 
     h1 {
-
       font-size:
         clamp(
           2.8rem,
@@ -1787,7 +2199,6 @@ if (!apiUrl?.startsWith('https://')) {
 
 
     .tracker-heading {
-
       align-items:
         flex-start;
 
@@ -1797,28 +2208,12 @@ if (!apiUrl?.startsWith('https://')) {
 
 
     #map {
-
       height:
         480px !important;
 
       min-height:
-        480px;
+        480px !important;
     }
 
 
-    .flight-detail {
-
-      grid-template-columns:
-        1fr;
-    }
-
-
-    .route {
-
-      justify-content:
-        flex-start;
-    }
-
-  }
-
-</style>
+    .
