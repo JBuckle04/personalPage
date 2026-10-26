@@ -10,7 +10,6 @@ const workImages = [
   ['IMG_1430.JPEG', 'Lighting setup'],
   ['IMG_1718.JPEG', 'Live room'],
   ['IMG_2795.JPEG', 'Stage setup'],
-  ['IMG_3352.JPEG', 'Event production'],
   ['IMG_3375.JPG', 'Lighting rig'],
   ['IMG_3418.JPEG', 'Show preparation'],
   ['IMG_3537.JPEG', 'Live event'],
@@ -53,11 +52,6 @@ const workImages = [
         <section class="carousel-section" aria-labelledby="work-title">
           <div class="section-header">
             <h2 id="work-title">Selected work</h2>
-            <div class="carousel-controls">
-              <span>01 / {String(workImages.length).padStart(2, '0')}</span>
-              <button type="button" class="carousel-button" data-direction="previous" aria-label="Previous image">←</button>
-              <button type="button" class="carousel-button" data-direction="next" aria-label="Next image">→</button>
-            </div>
           </div>
           <div class="carousel" aria-label="Selected work images">
             <div class="carousel-track">
@@ -66,6 +60,11 @@ const workImages = [
                   <img src={`/images/${image}`} alt={`${label} from live events work`} loading={index === 0 ? 'eager' : 'lazy'} />
                 </figure>
               ))}
+            </div>
+            <div class="carousel-controls">
+              <button type="button" class="carousel-button" data-direction="previous" aria-label="Previous image">←</button>
+              <button type="button" class="carousel-button" data-direction="next" aria-label="Next image">→</button>
+              <span class="carousel-count" aria-live="polite">01 / {String(workImages.length).padStart(2, '0')}</span>
             </div>
           </div>
         </section>
@@ -110,9 +109,10 @@ const workImages = [
   .carousel-section { padding: 0 0 132px; }
   .section-header { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid #111; padding: 16px 0; }
   h2 { margin-bottom: 0; font-size: 1rem; font-weight: 500; letter-spacing: -.02em; }
-  .carousel-controls { display: flex; align-items: center; gap: 12px; color: #777; font-size: .75rem; }
-  .carousel-button { border: 0; padding: 0 4px; background: transparent; color: #111; font: inherit; cursor: pointer; }
-  .carousel-button:hover { color: #777; }
+  .carousel-controls { display: flex; align-items: center; gap: 8px; margin-top: 16px; color: #777; font-size: .75rem; }
+  .carousel-button { display: grid; width: 40px; height: 40px; place-items: center; border: 1px solid #111; padding: 0; background: #fff; color: #111; font: inherit; cursor: pointer; }
+  .carousel-button:hover { background: #111; color: #fff; }
+  .carousel-count { margin-left: 8px; }
   .carousel { overflow: hidden; }
   .carousel-track { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 2px; scroll-snap-type: x mandatory; scrollbar-width: none; }
   .carousel-track::-webkit-scrollbar { display: none; }
@@ -141,6 +141,7 @@ const workImages = [
 <script>
   const track = document.querySelector('.carousel-track')
   const originalSlides = track ? Array.from(track.querySelectorAll('.carousel-slide')) : []
+  const count = document.querySelector('.carousel-count')
   const gap = 20
   let slideWidth = 0
   let loopWidth = 0
@@ -158,10 +159,17 @@ const workImages = [
       track.append(slide)
     })
 
+    const updateCount = () => {
+      if (!count || !slideWidth) return
+      const currentIndex = Math.max(0, Math.min(originalSlides.length - 1, Math.round((track.scrollLeft - loopWidth) / slideWidth)))
+      count.textContent = `${String(currentIndex + 1).padStart(2, '0')} / ${String(originalSlides.length).padStart(2, '0')}`
+    }
+
     const measure = () => {
       slideWidth = originalSlides[0].getBoundingClientRect().width + gap
       loopWidth = slideWidth * originalSlides.length
       track.scrollLeft = loopWidth
+      updateCount()
     }
 
     measure()
@@ -170,6 +178,7 @@ const workImages = [
     track.addEventListener('scroll', () => {
       if (track.scrollLeft >= loopWidth * 2) track.scrollLeft -= loopWidth
       if (track.scrollLeft <= 0) track.scrollLeft += loopWidth
+      updateCount()
     })
 
     document.querySelectorAll('.carousel-button').forEach((button) => {
