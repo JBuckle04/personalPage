@@ -1,6 +1,24 @@
 ---
 const name = 'James Buckle'
 const linkedin = 'https://www.linkedin.com/in/jamesbuckleuk'
+const workImages = [
+  ['att.Oujh1AryYEZVEvVi6q2lsgtuOeyHah0UW-pkDsSXB34.jpg', 'Event build'],
+  ['att.sg27hBtmE_28FqdToM87Hy3ZZV822ccKMFYHbfSKvns.jpg', 'Production control'],
+  ['att.ucRQYqnDL504r7QU3bwXt798C0hRgbnBLz_ZvTErwbs.jpg', 'Backstage'],
+  ['cb3bc1e8-653c-41a8-bad6-a76844654d32.jpg', 'Live production'],
+  ['IMG_0596.JPEG', 'Event space'],
+  ['IMG_1430.JPEG', 'Lighting setup'],
+  ['IMG_1718.JPEG', 'Live room'],
+  ['IMG_2795.JPEG', 'Stage setup'],
+  ['IMG_3352.JPEG', 'Event production'],
+  ['IMG_3375.JPG', 'Lighting rig'],
+  ['IMG_3418.JPEG', 'Show preparation'],
+  ['IMG_3537.JPEG', 'Live event'],
+  ['IMG_3905.JPEG', 'Stage lighting'],
+  ['IMG_3920.JPEG', 'Venue setup'],
+  ['IMG_4148.JPEG', 'Production floor'],
+  ['IMG_4374.JPEG', 'Show environment'],
+]
 ---
 <!doctype html>
 <html lang="en">
@@ -27,21 +45,29 @@ const linkedin = 'https://www.linkedin.com/in/jamesbuckleuk'
         </section>
 
         <section class="intro" aria-labelledby="intro-title">
-          <p class="label">Live events / systems / technology</p>
-          <h1 id="intro-title">I build tools and systems for live events.</h1>
-          <p class="intro-copy">I’m {name}, a live events technologist focused on making complex production work clear, reliable, and easy to use.</p>
+          <p class="label">Live events / Audio / Networking</p>
+          <h1 id="intro-title">Freelance Events Lighting Technician</h1>
+          <p class="intro-copy">I’m {name}, a live events technician, passionate about lighting, rigging and event management.</p>
         </section>
 
         <section class="carousel-section" aria-labelledby="work-title">
           <div class="section-header">
             <h2 id="work-title">Selected work</h2>
-            <span>01 / 01</span>
+            <div class="carousel-controls">
+              <span>01 / {String(workImages.length).padStart(2, '0')}</span>
+              <button type="button" class="carousel-button" data-direction="previous" aria-label="Previous image">←</button>
+              <button type="button" class="carousel-button" data-direction="next" aria-label="Next image">→</button>
+            </div>
           </div>
           <div class="carousel" aria-label="Selected work images">
-            <figure>
-              <img src="/images/DTA_EventManager.jpg" alt="DTA Event Manager interface" />
-              <figcaption>DTA Event Manager</figcaption>
-            </figure>
+            <div class="carousel-track">
+              {workImages.map(([image, label], index) => (
+                <figure class="carousel-slide">
+                  <img src={`/images/${image}`} alt={`${label} from live events work`} loading={index === 0 ? 'eager' : 'lazy'} />
+                  <figcaption>{label}</figcaption>
+                </figure>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -85,9 +111,13 @@ const linkedin = 'https://www.linkedin.com/in/jamesbuckleuk'
   .carousel-section { padding: 0 0 132px; }
   .section-header { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid #111; padding: 16px 0; }
   h2 { margin-bottom: 0; font-size: 1rem; font-weight: 500; letter-spacing: -.02em; }
-  .section-header span { color: #777; font-size: .75rem; }
-  .carousel figure { margin: 0; }
-  .carousel img { display: block; width: 100%; max-height: 720px; object-fit: cover; }
+  .carousel-controls { display: flex; align-items: center; gap: 12px; color: #777; font-size: .75rem; }
+  .carousel-button { border: 0; padding: 0 4px; background: transparent; color: #111; font: inherit; cursor: pointer; }
+  .carousel-button:hover { color: #777; }
+  .carousel { overflow: hidden; }
+  .carousel-track { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 12px; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: #111 #eee; }
+  .carousel-slide { flex: 0 0 min(78vw, 920px); margin: 0; scroll-snap-align: start; }
+  .carousel img { display: block; width: 100%; height: min(58vw, 620px); min-height: 300px; object-fit: cover; }
   figcaption { margin-top: 12px; color: #666; font-size: .75rem; }
   .info { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; border-top: 1px solid #111; padding: 20px 0 132px; }
   .info h2 { font-size: clamp(2rem, 4vw, 4rem); letter-spacing: -.06em; }
@@ -103,6 +133,21 @@ const linkedin = 'https://www.linkedin.com/in/jamesbuckleuk'
     .intro { padding: 72px 0 92px; }
     h1 { font-size: clamp(2.8rem, 13vw, 5rem); }
     .carousel-section { padding-bottom: 92px; }
+    .carousel-slide { flex-basis: 88vw; }
+    .carousel img { height: 58vw; min-height: 240px; }
     .info { grid-template-columns: 1fr; gap: 48px; padding-bottom: 92px; }
   }
 </style>
+
+<script>
+  const track = document.querySelector('.carousel-track')
+  const slides = document.querySelectorAll('.carousel-slide')
+
+  document.querySelectorAll('.carousel-button').forEach((button) => {
+    button.addEventListener('click', () => {
+      const direction = button.dataset.direction === 'next' ? 1 : -1
+      const slideWidth = slides[0].getBoundingClientRect().width + 20
+      track?.scrollBy({ left: direction * slideWidth, behavior: 'smooth' })
+    })
+  })
+</script>
