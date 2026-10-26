@@ -64,7 +64,6 @@ const workImages = [
               {workImages.map(([image, label], index) => (
                 <figure class="carousel-slide">
                   <img src={`/images/${image}`} alt={`${label} from live events work`} loading={index === 0 ? 'eager' : 'lazy'} />
-                  <figcaption>{label}</figcaption>
                 </figure>
               ))}
             </div>
@@ -115,10 +114,10 @@ const workImages = [
   .carousel-button { border: 0; padding: 0 4px; background: transparent; color: #111; font: inherit; cursor: pointer; }
   .carousel-button:hover { color: #777; }
   .carousel { overflow: hidden; }
-  .carousel-track { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 12px; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: #111 #eee; }
+  .carousel-track { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 2px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .carousel-track::-webkit-scrollbar { display: none; }
   .carousel-slide { flex: 0 0 min(78vw, 920px); margin: 0; scroll-snap-align: start; }
   .carousel img { display: block; width: 100%; height: min(58vw, 620px); min-height: 300px; object-fit: cover; }
-  figcaption { margin-top: 12px; color: #666; font-size: .75rem; }
   .info { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; border-top: 1px solid #111; padding: 20px 0 132px; }
   .info h2 { font-size: clamp(2rem, 4vw, 4rem); letter-spacing: -.06em; }
   .info-copy { max-width: 430px; color: #555; line-height: 1.6; }
@@ -141,13 +140,60 @@ const workImages = [
 
 <script>
   const track = document.querySelector('.carousel-track')
-  const slides = document.querySelectorAll('.carousel-slide')
+  const originalSlides = track ? Array.from(track.querySelectorAll('.carousel-slide')) : []
+  const gap = 20
+  let slideWidth = 0
+  let loopWidth = 0
 
-  document.querySelectorAll('.carousel-button').forEach((button) => {
-    button.addEventListener('click', () => {
-      const direction = button.dataset.direction === 'next' ? 1 : -1
-      const slideWidth = slides[0].getBoundingClientRect().width + 20
-      track?.scrollBy({ left: direction * slideWidth, behavior: 'smooth' })
+  if (track && originalSlides.length > 0) {
+    const before = originalSlides.map((slide) => slide.cloneNode(true))
+    const after = originalSlides.map((slide) => slide.cloneNode(true))
+
+    before.forEach((slide) => {
+      slide.setAttribute('aria-hidden', 'true')
+      track.prepend(slide)
     })
-  })
+    after.forEach((slide) => {
+      slide.setAttribute('aria-hidden', 'true')
+      track.append(slide)
+    })
+
+    const measure = () => {
+      slideWidth = originalSlides[0].getBoundingClientRect().width + gap
+      loopWidth = slideWidth * originalSlides.length
+      track.scrollLeft = loopWidth
+    }
+
+    measure()
+    window.addEventListener('resize', measure)
+
+    track.addEventListener('scroll', () => {
+      if (track.scrollLeft >= loopWidth * 2) track.scrollLeft -= loopWidth
+      if (track.scrollLeft <= 0) track.scrollLeft += loopWidth
+    })
+
+    document.querySelectorAll('.carousel-button').forEach((button) => {
+      button.addEventListener('click', () => {
+        const direction = button.dataset.direction === 'next' ? 1 : -1
+        track.scrollBy({ left: direction * slideWidth, behavior: 'smooth' })
+      })
+    })
+
+    let autoplay = window.setInterval(() => {
+      track.scrollBy({ left: slideWidth, behavior: 'smooth' })
+    }, 4000)
+
+    const pauseAutoplay = () => window.clearInterval(autoplay)
+    const resumeAutoplay = () => {
+      window.clearInterval(autoplay)
+      autoplay = window.setInterval(() => {
+        track.scrollBy({ left: slideWidth, behavior: 'smooth' })
+      }, 4000)
+    }
+
+    track.addEventListener('mouseenter', pauseAutoplay)
+    track.addEventListener('mouseleave', resumeAutoplay)
+    track.addEventListener('focusin', pauseAutoplay)
+    track.addEventListener('focusout', resumeAutoplay)
+  }
 </script>
